@@ -1,0 +1,46 @@
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentity
+metadata:
+  name: keda-demo-app
+  namespace: keda-demo-app
+  annotations:
+    aadpodidentity.k8s.io/Behavior: namespaced
+spec:
+  type: 0
+  resourceID: /subscriptions/74dacd4f-a248-45bb-a2f0-af700dc4cf68/resourceGroups/managed-identities-stg-rg/providers/Microsoft.ManagedIdentity/userAssignedIdentities/keda-stg-mi
+  clientID: 8469c7cb-7be4-46c7-a76b-74674726520e
+---
+apiVersion: aadpodidentity.k8s.io/v1
+kind: AzureIdentityBinding
+metadata:
+  name: keda-demo-app-binding
+  namespace: keda-demo-app
+spec:
+  azureIdentity: keda-demo-app
+  selector: keda-demo-app
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keda-demo-app
+  namespace: keda-demo-app
+  labels:
+    app: keda-demo-app
+spec:
+  selector:
+    matchLabels:
+      app: keda-demo-app
+  template:
+    metadata:
+      labels:
+        app: keda-demo-app
+        aadpodidbinding: keda-demo-app
+    spec:
+      containers:
+        - name: message-receiver
+          image: hmctspublic.azurecr.io/keda-demo/message-receiver:0.0.2
+          env:
+            - name: FULLY_QUALIFIED_NAMESPACE
+              value: sds-keda-stg-01.servicebus.windows.net
+            - name: QUEUE
+              value: orders
