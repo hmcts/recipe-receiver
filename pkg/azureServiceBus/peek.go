@@ -14,6 +14,7 @@ func peekWithRetry(receiver *azservicebus.Receiver) (err error) {
 	for i := 0; i < 3; i++ {
 		_, err = receiver.PeekMessages(ctx, 1, nil)
 		fmt.Println("Failed to connect to queue, retrying...")
+
 		// Panic after third failed try
 		if (err != nil) && (i == 2) {
 			panic(err)
