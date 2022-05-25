@@ -9,13 +9,17 @@ import (
 func peekWithRetry(receiver *azservicebus.Receiver) (err error) {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
+
 	// Retry 3 times
-	fmt.Println("Failed to connect to queue. Retrying...")
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 3; i++ {
 		_, err = receiver.PeekMessages(ctx, 1, nil)
-		if (err != nil) && (i == 1) {
+		fmt.Println("Failed to connect to queue, retrying...")
+		// Panic after third failed try
+		if (err != nil) && (i == 2) {
 			panic(err)
+		} else if err == nil {
+			break
 		}
 	}
-	return err
+	return nil
 }
