@@ -31,21 +31,6 @@ func Receiver(fullyQualifiedNamespace *string, queue *string) error {
 
 	fmt.Println("Connectivity looks good...")
 
-	//peekContext, cancel := context.WithTimeout(context.TODO(), time.Second*10)
-	//defer cancel()
-	//
-	//// Retry 3 times
-	//for i := 0; i < 3; i++ {
-	//	_, err := receiver.PeekMessages(peekContext, 1, nil)
-	//	if err == nil {
-	//		fmt.Println("Connectivity looks good...")
-	//		break
-	//	}
-	//	if i == 2 {
-	//		panic(fmt.Sprintf("Failed to connect to Service Bus. Error: %s", err))
-	//	}
-	//}
-
 	fmt.Printf("Ready to receive messages from Service Bus queue: %s/%s\n", *fullyQualifiedNamespace, *queue)
 
 	for {
