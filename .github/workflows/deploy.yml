@@ -57,7 +57,7 @@ jobs:
         with:
           manifests: |
             ${{ github.workspace }}/kubernetes/deployment.yaml
-#            ${{ github.workspace }}/kubernetes/autoscaling.yaml
+            ${{ github.workspace }}/kubernetes/autoscaling.yaml
           images: |
             ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
           namespace: ${{ env.NAMESPACE }}
