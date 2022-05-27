@@ -1,5 +1,9 @@
 function:
   image: 'hmctspublic.azurecr.io/recipe-receiver:9b6483d10d01a1ed0755aa5f69d0c65765f521bb'
+  memoryRequests: 64Mi
+  cpuRequests: 75m
+  memoryLimits: 500mi
+  cpuLimits: 300m
   triggerAuth:
     enabled: true
     create: true
