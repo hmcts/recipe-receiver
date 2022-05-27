@@ -26,4 +26,5 @@ appVersion: "0.1.0"
 dependencies:
   - name: function
     version: 15 #v2.0.2-beta
-    repository: '@hmctspublic'
+    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo'
+    #repository: '@hmctspublic'
