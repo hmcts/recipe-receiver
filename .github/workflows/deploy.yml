@@ -51,10 +51,7 @@ jobs:
       - uses: azure/k8s-bake@v2.2
         with:
           renderEngine: "helm"
-          helmChart: "./recipe-receiver/"
-          # overrideFiles: "./values-override.yaml"
-          overrides: |
-            image:2
+          helmChart: "./charts/recipe-receiver/"
           helm-version: "v3.9.0"
         id: bake
 
