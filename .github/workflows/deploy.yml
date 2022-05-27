@@ -55,7 +55,7 @@ jobs:
           # overrideFiles: "./values-override.yaml"
           overrides: |
             image:2
-          helm-version: "3.9.0"
+          helm-version: "v3.9.0"
         id: bake
 
       # Deploy app to AKS
