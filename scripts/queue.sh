@@ -11,6 +11,7 @@ SB_RESOURCE_GROUP='sds-keda-stg'
 MESSAGES=200
 SCRIPT_DIR=$(dirname "${0}")
 
+az account set --subscription 74dacd4f-a248-45bb-a2f0-af700dc4cf68
 # Create queue for pr
 QUEUE=$(az servicebus queue create --namespace-name sds-keda-stg-01 \
         --resource-group sds-keda-stg --name "${QUEUE_NAME}"  \
