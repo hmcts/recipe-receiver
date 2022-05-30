@@ -55,7 +55,7 @@ jobs:
         with:
           renderEngine: "helm"
           helmChart: "./charts/recipe-receiver/"
-          releaseName: recipe-receiver
+          releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: "v3.9.0"
           overrides: |
             function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
