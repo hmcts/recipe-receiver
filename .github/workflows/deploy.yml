@@ -16,7 +16,7 @@ jobs:
   buildAndDeploy:
     runs-on: ubuntu-latest
     env:
-      QUEUE_NAME: recipes-${{GITHUB_REF_NAME}}
+      QUEUE_NAME: recipes-${{ github.ref.name }}
     steps:
       - uses: actions/checkout@main
 
