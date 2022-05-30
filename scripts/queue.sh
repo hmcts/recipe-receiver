@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 # Create queue for PR
 # Fill up PR's service bus queue
 
