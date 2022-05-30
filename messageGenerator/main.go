@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -96,22 +97,29 @@ func main() {
 	message := azservicebus.Message{}
 	contentType := "plain/text"
 
+	var wg = &sync.WaitGroup{}
+
 	for i := 0; i < numberOfMessages; i++ {
-		recipe := createRecipe()
-		recipeName := recipe.name
-		recipeIngredients := strings.Join(recipe.ingredients, ", ")
-		messageString := fmt.Sprintf("Name: %s, Ingredients: %s.", recipeName, recipeIngredients)
+		wg.Add(1)
 
-		message.Body = []byte(messageString)
-		message.ContentType = &contentType
+		go func() {
+			recipe := createRecipe()
+			recipeName := recipe.name
+			recipeIngredients := strings.Join(recipe.ingredients, ", ")
+			messageString := fmt.Sprintf("Name: %s, Ingredients: %s.", recipeName, recipeIngredients)
 
-		if err := serviceBusSender.SendMessage(context.TODO(), &message, nil); err != nil {
-			panic(err)
-		} else {
-			log.Info().Msgf("%s has been sent! Ingredients: %s.", recipeName, recipeIngredients)
-		}
+			message.Body = []byte(messageString)
+			message.ContentType = &contentType
+
+			if err := serviceBusSender.SendMessage(context.TODO(), &message, nil); err != nil {
+				panic(err)
+			} else {
+				log.Info().Msgf("%s has been sent! Ingredients: %s.", recipeName, recipeIngredients)
+			}
+			wg.Done()
+		}()
 	}
-
+	wg.Wait()
 }
 
 func azureAuth(fullyQualifiedNamespace string) (*azservicebus.Client, error) {
