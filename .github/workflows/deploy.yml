@@ -66,6 +66,10 @@ jobs:
             function.triggers[0].queueLength:5
         id: bake
 
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Run script file
         run: |
           ./scripts/queue.sh ${{ env.QUEUE_NAME }}
