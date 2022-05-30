@@ -20,6 +20,7 @@ var (
 func main() {
 	mode = os.Getenv("MODE")
 
+	// Set which mode to run in
 	if mode == "" {
 		mode = "daemon"
 	} else if !utils.Contains(mode, modes) {
