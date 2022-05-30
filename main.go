@@ -13,9 +13,23 @@ var (
 		"FULLY_QUALIFIED_NAMESPACE",
 		"QUEUE",
 	}
+	modes = []string{"daemon", "job"}
+
+	mode string
 )
 
 func main() {
+	mode = os.Getenv("MODE")
+
+	if mode == "" {
+		mode = "daemon"
+	} else if !utils.Contains(mode, modes) {
+		mode = "daemon"
+		fmt.Printf("Warning: %s is not a valid mode, falling back to daemon mode. Please set env var MODE to either %s.\n", mode, strings.Join(modes, " or "))
+	}
+
+	fmt.Printf("MODE=%s\n", mode)
+
 	// Check correct environment variables are set
 	missingEnvVars := utils.VarCheck(requiredVars)
 	if len(missingEnvVars) > 0 {
@@ -25,7 +39,7 @@ func main() {
 	serviceBus, serviceBusQueue := os.Getenv("FULLY_QUALIFIED_NAMESPACE"), os.Getenv("QUEUE")
 
 	// Start receiving messages
-	err := azureServiceBus.Receiver(&serviceBus, &serviceBusQueue)
+	err := azureServiceBus.Receiver(&serviceBus, &serviceBusQueue, mode)
 	if err != nil {
 		panic(err)
 	}
