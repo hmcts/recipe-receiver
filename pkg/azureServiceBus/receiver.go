@@ -6,10 +6,11 @@ import (
 	"fmt"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"os"
 	"time"
 )
 
-func Receiver(fullyQualifiedNamespace *string, queue *string) error {
+func Receiver(fullyQualifiedNamespace *string, queue *string, mode string) error {
 	zerolog.TimeFieldFormat = time.RFC3339
 
 	client, err := azureAuth(*fullyQualifiedNamespace)
@@ -35,7 +36,7 @@ func Receiver(fullyQualifiedNamespace *string, queue *string) error {
 
 	for {
 		func() {
-			ctx, cancel := context.WithTimeout(context.TODO(), 60*time.Second)
+			ctx, cancel := context.WithTimeout(context.TODO(), 30*time.Second)
 
 			defer func() {
 				defer cancel()
@@ -46,7 +47,10 @@ func Receiver(fullyQualifiedNamespace *string, queue *string) error {
 				nil,
 			)
 
-			if errors.Is(err, context.DeadlineExceeded) {
+			if (errors.Is(err, context.DeadlineExceeded)) && (mode == "job") {
+				fmt.Println("No more messages to read. Exiting.")
+				os.Exit(0)
+			} else if errors.Is(err, context.DeadlineExceeded) && (mode == "daemon") {
 				if err := peekWithRetry(receiver); err != nil {
 					panic(fmt.Sprintf("Failed to connect to Service Bus. Timeout: %s", err))
 				}
