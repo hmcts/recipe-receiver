@@ -13,9 +13,8 @@ var (
 		"FULLY_QUALIFIED_NAMESPACE",
 		"QUEUE",
 	}
+	mode  string
 	modes = []string{"daemon", "job"}
-
-	mode string
 )
 
 func main() {
