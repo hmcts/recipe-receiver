@@ -10,10 +10,13 @@ env:
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
   APP_NAME: recipe-receiver
   NAMESPACE: toffee
+  QUEUE_NAMESPACE: sds-keda-stg-01
 
 jobs:
   buildAndDeploy:
     runs-on: ubuntu-latest
+    env:
+      QUEUE_NAME: recipes-pr${{ github.event.number }}
     steps:
       - uses: actions/checkout@main
 
@@ -52,13 +55,28 @@ jobs:
         with:
           renderEngine: "helm"
           helmChart: "./charts/recipe-receiver/"
+          releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: "v3.9.0"
+          overrides: |
+            function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
+            function.environment.QUEUE:${{ env.QUEUE_NAME }}
+            function.triggers[0].type:azure-servicebus
+            function.triggers[0].namespace:${{ env.QUEUE_NAMESPACE }}
+            function.triggers[0].queueName:${{ env.QUEUE_NAME }}
+            function.triggers[0].queueLength:5
         id: bake
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Run script file
+        run: |
+          ./scripts/queue.sh ${{ env.QUEUE_NAME }}
+        shell: bash
 
       # Deploy app to AKS
       - uses: azure/k8s-deploy@v1
         with:
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
-          images: |
-            ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
           namespace: ${{ env.NAMESPACE }}

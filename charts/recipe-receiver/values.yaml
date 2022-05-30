@@ -1,5 +1,6 @@
 function:
-  image: 'hmctspublic.azurecr.io/recipe-receiver:9b6483d10d01a1ed0755aa5f69d0c65765f521bb'
+  image: SET_ME
+  maxReplicaCount: 10
   memoryRequests: 64Mi
   cpuRequests: 75m
   memoryLimits: 500Mi
@@ -10,9 +11,10 @@ function:
   triggers:
     - type: azure-servicebus
       namespace: sds-keda-stg-01
-      queueName: recipes
-      queueLength: '5'
+      queueName: recipe
+      queueLength: "5"
   aadIdentityName: toffee
   environment:
     FULLY_QUALIFIED_NAMESPACE: "sds-keda-stg-01.servicebus.windows.net"
-    QUEUE: "recipes"
+    QUEUE: recipe-
+    MODE: "job"
