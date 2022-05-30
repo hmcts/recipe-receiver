@@ -7,7 +7,7 @@ SERVICE_BUS='sds-keda-stg-01'
 
 QUEUE_NAME="$1"
 QUEUE=$(az servicebus queue create --namespace-name sds-keda-stg-01 \
-        --resource-group sds-keda-stg --name recipes-pr"${QUEUE_NAME}"  \
+        --resource-group sds-keda-stg --name "${QUEUE_NAME}"  \
         --query name -o tsv)
 
 SB_RESOURCE_GROUP='sds-keda-stg'
@@ -19,7 +19,7 @@ cd "${SCRIPT_DIR}" || exit
 
 CURRENT_QUEUE_SIZE=$(az servicebus queue show --resource-group "${SB_RESOURCE_GROUP}" \
     --namespace-name "${SERVICE_BUS}" \
-    --name "${QUEUE}" \
+    --name "${QUEUE_NAME}" \
     --query countDetails.activeMessageCount
     )
 
