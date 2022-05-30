@@ -55,7 +55,7 @@ jobs:
           releaseName: recipe-receiver
           helm-version: "v3.9.0"
           overrides: |
-            image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
+            function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
         id: bake
 
       # Deploy app to AKS
