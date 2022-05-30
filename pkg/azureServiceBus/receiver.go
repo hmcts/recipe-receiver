@@ -20,7 +20,7 @@ func Receiver(fullyQualifiedNamespace *string, queue *string, mode string) error
 
 	// Start receiver
 	receiver, err := client.NewReceiverForQueue(
-		"orders",
+		*queue,
 		nil,
 	)
 	fmt.Println("Starting Service Bus Message Receiver...")
