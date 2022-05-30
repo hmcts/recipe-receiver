@@ -12,6 +12,7 @@ until [[ "${CURRENT_QUEUE_SIZE}" == "0" ]]; do
       --name "${QUEUE_NAME}" \
       --query countDetails.activeMessageCount -o tsv)
   echo "Current queue size: ${CURRENT_QUEUE_SIZE}"
+  sleep 5
 done
 
 echo "${QUEUE_NAME} queue is now empty"
