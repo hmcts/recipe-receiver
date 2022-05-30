@@ -10,7 +10,7 @@ env:
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
   APP_NAME: recipe-receiver
   NAMESPACE: toffee
-  QUEUE_NAME: recipes-${{ GITHUB_REF_NAME }}
+  QUEUE_NAME: recipes-${{ .github.ref.name }}
   QUEUE_NAMESPACE: sds-keda-stg-01
 
 jobs:
