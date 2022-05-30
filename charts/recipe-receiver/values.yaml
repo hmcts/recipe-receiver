@@ -1,5 +1,6 @@
 function:
   image: SET_ME
+  maxReplicaCount: 10
   memoryRequests: 64Mi
   cpuRequests: 75m
   memoryLimits: 500Mi
