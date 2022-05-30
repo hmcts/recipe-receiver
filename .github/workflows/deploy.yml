@@ -52,6 +52,7 @@ jobs:
         with:
           renderEngine: "helm"
           helmChart: "./charts/recipe-receiver/"
+          releaseName: recipe-receiver
           helm-version: "v3.9.0"
         id: bake
 
