@@ -1,0 +1,10 @@
+apiVersion: v2
+name: recipe-receiver
+description: A Helm chart to deploy the recipe receiver app.
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+dependencies:
+  - name: function
+    version: 15 #v2.0.2-beta
+    repository: 'https://hmctspublic.azurecr.io/helm/v1/repo'

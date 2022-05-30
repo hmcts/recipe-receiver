@@ -2,7 +2,6 @@ apiVersion: aadpodidentity.k8s.io/v1
 kind: AzureIdentity
 metadata:
   name: keda-demo-app
-  namespace: keda-demo-app
   annotations:
     aadpodidentity.k8s.io/Behavior: namespaced
 spec:
@@ -14,7 +13,6 @@ apiVersion: aadpodidentity.k8s.io/v1
 kind: AzureIdentityBinding
 metadata:
   name: keda-demo-app-binding
-  namespace: keda-demo-app
 spec:
   azureIdentity: keda-demo-app
   selector: keda-demo-app
@@ -23,7 +21,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: keda-demo-app
-  namespace: keda-demo-app
   labels:
     app: keda-demo-app
 spec:
@@ -38,7 +35,7 @@ spec:
     spec:
       containers:
         - name: message-receiver
-          image: hmctspublic.azurecr.io/keda-demo/message-receiver:0.0.2
+          image: hmctspublic.azurecr.io/recipe-receiver:9b6483d10d01a1ed0755aa5f69d0c65765f521bb
           env:
             - name: FULLY_QUALIFIED_NAMESPACE
               value: sds-keda-stg-01.servicebus.windows.net
