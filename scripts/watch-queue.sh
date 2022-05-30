@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
-
 set -e
 
 # watch queue until it is empty
-
 SERVICE_BUS='sds-keda-stg-01'
 QUEUE_NAME="$1"
 SB_RESOURCE_GROUP='sds-keda-stg'
