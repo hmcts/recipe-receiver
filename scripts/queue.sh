@@ -18,7 +18,7 @@ QUEUE=$(az servicebus queue create --namespace-name sds-keda-stg-01 \
         --query name -o tsv)
 
 cd "${SCRIPT_DIR}" || exit
-go run ../messageGenerator/main.go "${SERVICE_BUS}.servicebus.windows.net" "${QUEUE}" "${MESSAGES}"
+go run ../messageGenerator/main.go "${SERVICE_BUS}.servicebus.windows.net" "${QUEUE_NAME}" "${MESSAGES}"
 
 CURRENT_QUEUE_SIZE=$(az servicebus queue show --resource-group "${SB_RESOURCE_GROUP}" \
     --namespace-name "${SERVICE_BUS}" \
