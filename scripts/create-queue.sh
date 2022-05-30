@@ -8,7 +8,7 @@ set -e
 SERVICE_BUS='sds-keda-stg-01'
 QUEUE_NAME="$1"
 SB_RESOURCE_GROUP='sds-keda-stg'
-MESSAGES=500
+MESSAGES=1000
 SCRIPT_DIR=$(dirname "${0}")
 
 az account set --subscription 74dacd4f-a248-45bb-a2f0-af700dc4cf68
