@@ -24,7 +24,7 @@ func Receiver(fullyQualifiedNamespace *string, queue *string, mode string) error
 		nil,
 	)
 	fmt.Println("Starting Service Bus Message Receiver...")
-	fmt.Printf("Testing connectivity to %s/$s\n", *fullyQualifiedNamespace, *queue)
+	fmt.Printf("Testing connectivity to %s/%s\n", *fullyQualifiedNamespace, *queue)
 
 	if err := peekWithRetry(receiver); err != nil {
 		panic(fmt.Sprintf("Failed to connect to Service Bus. Error: %s", err))
