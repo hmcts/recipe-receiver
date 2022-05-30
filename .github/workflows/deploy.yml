@@ -70,9 +70,9 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Run script file
+      - name: Create queue
         run: |
-          ./scripts/queue.sh ${{ env.QUEUE_NAME }}
+          ./scripts/create-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
 
       # Deploy app to AKS
@@ -80,3 +80,8 @@ jobs:
         with:
           manifests: ${{ steps.bake.outputs.manifestsBundle }}
           namespace: ${{ env.NAMESPACE }}
+
+      - name: Watch queue
+        run: |
+          ./scripts/watch-queue.sh ${{ env.QUEUE_NAME }}
+        shell: bash
