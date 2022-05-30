@@ -4,8 +4,10 @@
 # Fill up PR's service bus queue
 
 SERVICE_BUS='sds-keda-stg-01'
+
+QUEUE_NAME="$1"
 QUEUE=$(az servicebus queue create --namespace-name sds-keda-stg-01 \
-        --resource-group sds-keda-stg --name recipes-pr"${PR_NUMBER}"  \
+        --resource-group sds-keda-stg --name recipes-pr"${QUEUE_NAME}"  \
         --query name -o tsv)
 
 SB_RESOURCE_GROUP='sds-keda-stg'

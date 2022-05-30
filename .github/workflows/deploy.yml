@@ -65,6 +65,11 @@ jobs:
             function.triggers[0].queueLength=5
         id: bake
 
+      - name: Run script file
+        run: |
+          ./scripts/queue.sh ${{ env.QUEUE_NAME }}
+        shell: bash
+
       # Deploy app to AKS
       - uses: azure/k8s-deploy@v1
         with:
