@@ -10,6 +10,8 @@ env:
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
   APP_NAME: recipe-receiver
   NAMESPACE: toffee
+  QUEUE_NAME: recipes-${{ env.GITHUB_REF_NAME }}
+  QUEUE_NAMESPACE: sds-keda-stg-01
 
 jobs:
   buildAndDeploy:
@@ -56,6 +58,11 @@ jobs:
           helm-version: "v3.9.0"
           overrides: |
             function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
+            function.environment.QUEUE=${{ env.QUEUE_NAME }}
+            function.triggers[0].type=azure-servicebus
+            function.triggers[0].namespace=${{ env.QUEUE_NAMESPACE }}
+            function.triggers[0].queueName=${{ env.QUEUE_NAME }}
+            function.triggers[0].queueLength=5
         id: bake
 
       # Deploy app to AKS
