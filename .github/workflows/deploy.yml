@@ -4,16 +4,15 @@ on:
     paths:
       - 'main.go'
       - 'pkg/**'
-      # Environment variables available to all jobs and steps in this workflow
 env:
   REGISTRY_NAME: hmctspublic
   CLUSTER_NAME: ss-dev-01-aks
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
-  NAMESPACE: recipe-receiver
   APP_NAME: recipe-receiver
+  NAMESPACE: toffee
 
 jobs:
-  build:
+  buildAndDeploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
@@ -28,6 +27,7 @@ jobs:
         env:
           GOOS: linux
           GOARCH: amd64
+
       # Connect to Azure Container Registry (ACR)
       - uses: azure/docker-login@v1
         with:
@@ -48,26 +48,17 @@ jobs:
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
 
-      # Create namespace if doesn't exist
-      - run: |
-          kubectl create namespace ${{ env.NAMESPACE }} --dry-run=client -o json | kubectl apply -f -
-#
-#      # Create image pull secret for ACR
-#      - uses: azure/k8s-create-secret@v1
-#        with:
-#          container-registry-url: ${{ env.REGISTRY_NAME }}.azurecr.io
-#          container-registry-username: ${{ secrets.REGISTRY_USERNAME }}
-#          container-registry-password: ${{ secrets.REGISTRY_PASSWORD }}
-#          secret-name: ${{ env.SECRET }}
-#          namespace: ${{ env.NAMESPACE }}
-#          arguments: --force true
+      - uses: azure/k8s-bake@v2.2
+        with:
+          renderEngine: "helm"
+          helmChart: "./charts/recipe-receiver/"
+          helm-version: "v3.9.0"
+        id: bake
 
       # Deploy app to AKS
       - uses: azure/k8s-deploy@v1
         with:
-          manifests: |
-            ${{ github.workspace }}/kubernetes/deployment.yaml
-#            ${{ github.workspace }}/kubernetes/autoscaling.yaml
+          manifests: ${{ steps.bake.outputs.manifestsBundle }}
           images: |
             ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
           namespace: ${{ env.NAMESPACE }}
