@@ -1,0 +1,40 @@
+name: Cleanup Resources
+on:
+  pull_request:
+    types:
+      - closed
+    paths:
+      - 'main.go'
+      - 'pkg/**'
+env:
+  REGISTRY_NAME: hmctspublic
+  CLUSTER_NAME: ss-dev-01-aks
+  CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
+  APP_NAME: recipe-receiver
+  NAMESPACE: toffee
+  QUEUE_NAMESPACE: sds-keda-stg-01
+
+jobs:
+  buildAndDeploy:
+    runs-on: ubuntu-latest
+    env:
+      QUEUE_NAME: recipes-pr${{ github.event.number }}
+    steps:
+      - uses: actions/checkout@main
+
+      # Set the target Azure Kubernetes Service (AKS) cluster.
+      - uses: azure/aks-set-context@v1
+        with:
+          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          cluster-name: ${{ env.CLUSTER_NAME }}
+          resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Clean up PR resources
+      - name: Delete queue
+        run: |
+          ./scripts/cleanup.sh ${{ env.QUEUE_NAME }}
+        shell: bash
