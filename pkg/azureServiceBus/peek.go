@@ -13,6 +13,7 @@ func peekWithRetry(receiver *azservicebus.Receiver) (err error) {
 	// Retry 3 times
 	for i := 0; i < 3; i++ {
 		_, err = receiver.PeekMessages(ctx, 1, nil)
+
 		// Panic after third failed try
 		if (err != nil) && (i == 2) {
 			panic(err)

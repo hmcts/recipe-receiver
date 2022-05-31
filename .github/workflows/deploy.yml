@@ -4,6 +4,7 @@ on:
     paths:
       - 'main.go'
       - 'pkg/**'
+      - 'charts/**'
 env:
   REGISTRY_NAME: hmctspublic
   CLUSTER_NAME: ss-dev-01-aks
