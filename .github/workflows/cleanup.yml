@@ -13,12 +13,11 @@ env:
   APP_NAME: recipe-receiver
   NAMESPACE: toffee
   QUEUE_NAMESPACE: sds-keda-stg-01
+  QUEUE_NAME: recipes-pr${{ github.event.number }}
 
 jobs:
   buildAndDeploy:
     runs-on: ubuntu-latest
-    env:
-      QUEUE_NAME: recipes-pr${{ github.event.number }}
     steps:
       - uses: actions/checkout@main
 
@@ -34,7 +33,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Clean up PR resources
-      - name: Delete queue
+      - name: Clean up resources
         run: |
           ./scripts/cleanup.sh ${{ env.QUEUE_NAME }}
         shell: bash
