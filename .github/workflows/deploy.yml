@@ -27,6 +27,12 @@ jobs:
         with:
           go-version: 1.18
 
+      - name: Go fmt
+        run: go fmt
+        env:
+          GOOS: darwin
+          GOARCH: amd64
+
       # Build recipe-receiver app
       - name: Build
         run: go build -v .
