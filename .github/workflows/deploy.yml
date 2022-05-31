@@ -13,12 +13,11 @@ env:
   SB_RESOURCE_GROUP: sds-keda-stg
   SUBSCRIPTION: 74dacd4f-a248-45bb-a2f0-af700dc4cf68
   KUBE_NAMESPACE: toffee
+  QUEUE_NAME: recipes-pr${{ github.event.number }}
 
 jobs:
   buildAndDeploy:
     runs-on: ubuntu-latest
-    env:
-      QUEUE_NAME: recipes-pr${{ github.event.number }}
     steps:
       - uses: actions/checkout@main
 
