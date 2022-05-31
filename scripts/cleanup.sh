@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-PR_NUMBER=$( echo "${QUEUE_NAME}" | cut -d "-" -f2)
-LABEL="recipe-receiver-${PR_NUMBER}-function"
+LABEL="recipe-receiver-pr${PR_NUMBER}-function"
 
 # Delete PR queue
 az servicebus queue delete \
