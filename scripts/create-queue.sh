@@ -2,12 +2,6 @@
 
 set -e
 
-# Create queue for PR
-# Fill up PR's service bus queue
-
-#SERVICE_BUS='sds-keda-stg-01'
-#QUEUE_NAME="$1"
-#SB_RESOURCE_GROUP='sds-keda-stg'
 MESSAGES=1000
 SCRIPT_DIR=$(dirname "${0}")
 
@@ -22,6 +16,7 @@ echo "Queue created: $QUEUE"
 
 cd "${SCRIPT_DIR}" || exit
 
+# Fill up PR's service bus queue
 go run ../messageGenerator/main.go "${SERVICE_BUS}.servicebus.windows.net" "${QUEUE_NAME}" "${MESSAGES}"
 
 CURRENT_QUEUE_SIZE=$(az servicebus queue show --resource-group "${SB_RESOURCE_GROUP}" \
