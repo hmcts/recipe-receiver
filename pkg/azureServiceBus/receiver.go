@@ -50,10 +50,12 @@ func Receiver(fullyQualifiedNamespace *string, queue *string, mode string) error
 			if (errors.Is(err, context.DeadlineExceeded)) && (mode == "job") {
 				fmt.Println("No more messages to read. Exiting.")
 				os.Exit(0)
+
 			} else if errors.Is(err, context.DeadlineExceeded) && (mode == "daemon") {
 				if err := peekWithRetry(receiver); err != nil {
 					panic(fmt.Sprintf("Failed to connect to Service Bus. Timeout: %s", err))
 				}
+
 			} else if err != nil {
 				panic(err)
 			}
