@@ -9,11 +9,11 @@ function:
     create: true
   triggers:
     - type: azure-servicebus
-      namespace: sds-keda-stg-01
-      queueName: recipe
+      namespace: toffee-servicebus-stg
+      queueName: recipes
       queueLength: "5"
   aadIdentityName: toffee
   environment:
-    FULLY_QUALIFIED_NAMESPACE: "sds-keda-stg-01.servicebus.windows.net"
-    QUEUE: recipe-
+    FULLY_QUALIFIED_NAMESPACE: "toffee-servicebus-stg.servicebus.windows.net"
+    QUEUE: recipes
     MODE: "job"
