@@ -9,7 +9,7 @@ kubectl delete triggerauthentications.keda.sh -n "${KUBE_NAMESPACE}" -l app.kube
 kubectl delete scaledjobs.keda.sh -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name="${LABEL}"
 
 # Remove lock on resource group
-az group lock delete --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
+az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
 
 # Delete PR queue
 az servicebus queue delete \
@@ -21,7 +21,7 @@ az servicebus queue delete \
 # Make sure queue has ben deleted
 count=3
 until [[ $deleted == "true" ]] || [[ $count == 0 ]]; do
-  if [[ $(az servicebus queue show --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE_NAME}") ]]; then
+  if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE_NAME}") ]]; then
     deleted="true"
     echo "${QUEUE_NAME} queue has been deleted"
   elif [[ $count == 1 ]]; then
@@ -34,5 +34,6 @@ until [[ $deleted == "true" ]] || [[ $count == 0 ]]; do
 done
 
 # Recreate lock on resource group
-az group lock create --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}" --lock-type CanNotDelete
+echo "Recreate lock"
+az group lock create --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}" --lock-type CanNotDelete
 
