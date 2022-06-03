@@ -11,11 +11,10 @@ env:
   CLUSTER_NAME: ss-dev-01-aks
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
   APP_NAME: recipe-receiver
-  NAMESPACE: toffee
-  SERVICE_BUS: sds-keda-stg-01
   PR_NUMBER: ${{ github.event.number }}
   QUEUE_NAME: recipes-pr${{ github.event.number }}
-  SB_RESOURCE_GROUP: sds-keda-stg
+  SERVICE_BUS: toffee-servicebus-stg
+  SB_RESOURCE_GROUP: toffee-shared-infrastructure-stg
   SUBSCRIPTION: 74dacd4f-a248-45bb-a2f0-af700dc4cf68
   KUBE_NAMESPACE: toffee
 
