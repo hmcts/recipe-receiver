@@ -1,7 +1,7 @@
 # sds-recipe-receiver
 Demo app that reads messages from an Azure Service Bus queue and logs the messages to stdout.
 
-## Prerequisites
+## Prerequisites 
 
 ### Repository secrets
 There 3 secrets that are needed for workflows so they can function properly they are:
@@ -9,10 +9,10 @@ There 3 secrets that are needed for workflows so they can function properly they
 * REGISTRY_USERNAME - username for hmctspublic container registry.
 * REGISTRY_PASSWORD - password for hmctspublic container registry.
 
-### Permissions
+### Permissions 
 For this repository to be fully function we need to have the correct permissions in place for Keda, the GitHub workflows and the recipe receiver application.
 
-#### Keda
+#### Keda 
 The triggerAuthentications CRD from Keda uses Azure Pod Identity and a Managed Identity (keda-{env}-mi) to authenticate with the Azure Service Bus. This allows Keda to watch the size of the Queue, so it can scale pods up and down when necessary.
 
 The Managed Identity used by Keda needs the `Azure Service Bus Data Receiver` role scoped to the `toffee-servicebus-stg` service bus.
