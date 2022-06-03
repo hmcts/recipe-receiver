@@ -7,6 +7,7 @@ on:
       - 'main.go'
       - 'pkg/**'
       - 'charts/**'
+      - 'scripts/**'
 env:
   CLUSTER_NAME: ss-dev-01-aks
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
