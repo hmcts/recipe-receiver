@@ -28,7 +28,7 @@ There 3 secrets that are needed for workflows so they can function properly they
 For this repository to be fully function we need to have the correct permissions in place for Keda, the GitHub workflows and the recipe receiver application.
 
 #### Keda
-The triggerAuthentications CRD from Keda uses Azure Pod Identity and a Managed Identity (keda-{env}-mi) to authenticate with the Azure Service Bus. This allows Keda to watch the size of the Queue, so it can scale pods up and down when necessary.
+The triggerAuthentications CRD from Keda uses Azure Pod Identity and a Managed Identity (keda-stg-mi) to authenticate with the Azure Service Bus. This allows Keda to watch the size of the Queue, so it can scale pods up and down when necessary.
 
 The Managed Identity used by Keda needs the `Azure Service Bus Data Receiver` role scoped to the `toffee-servicebus-stg` service bus.
 
@@ -38,7 +38,7 @@ The recipe receiver application also uses a Managed identity to authenticate wit
 #### Workflow
 The workflow authenticates to Azure using Service Principal credentials stored in the AZURE_CREDENTIALS repository secret. That SP was created manually and is called `sds-recipe-receiver`.
 
-To allow the workflow to do all of this we need:
+To allow the workflow to do all of this the `sds-recipe-receiver` SP needs:
 * `Owner` role on the `toffee-shared-infrastructure-stg` resource group
 * `Azure Service Bus Data Owner` role on the `toffee-servicebus-stg` service bus
 * `Contributor` role on the `ss-dev-0-rg` & `ss-dev-01-rg` resource groups
