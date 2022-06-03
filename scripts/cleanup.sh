@@ -9,7 +9,7 @@ kubectl delete triggerauthentications.keda.sh -n "${KUBE_NAMESPACE}" -l app.kube
 kubectl delete scaledjobs.keda.sh -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name="${LABEL}"
 
 # Remove lock on resource group
-az group lock delete --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
+az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
 
 # Delete PR queue
 az servicebus queue delete \
