@@ -34,5 +34,6 @@ until [[ $deleted == "true" ]] || [[ $count == 0 ]]; do
 done
 
 # Recreate lock on resource group
+echo "Recreate lock"
 az group lock create --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}" --lock-type CanNotDelete
 
