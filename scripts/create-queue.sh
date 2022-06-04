@@ -18,7 +18,7 @@ cd "${SCRIPT_DIR}" || exit
 
 # Fill up PR's service bus queue
 echo ::group::Generate Messages
-go run ../messageGenerator/main.go "${SERVICE_BUS}.servicebus.windows.net" "${QUEUE_NAME}" "${MESSAGES}"
+go run ../messageGenerator/main.go -service-bus="${SERVICE_BUS}.servicebus.windows.net" -queue="${QUEUE_NAME}" -messages="${MESSAGES}"
 echo ::endgroup::
 
 CURRENT_QUEUE_SIZE=$(az servicebus queue show --resource-group "${SB_RESOURCE_GROUP}" \
