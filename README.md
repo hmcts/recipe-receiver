@@ -52,8 +52,8 @@ The script takes 3 arguments, the hostname of the service bus, the name of the q
 ### Examples
 Using the binary to load 500 messages into the recipes-pr10 queue:
 
-`./messageGenerator/recipe-sender toffee-servicebus-stg.servicebus.windows.net recipes-pr10 500`
+`./messageGenerator/recipe-sender -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes-pr10 -messages 500`
 
 Using `go run` to run the script to load 2000 messages into the recipes queue:
 
-`go run messageGenerator/main.go toffee-servicebus-stg.servicebus.windows.net recipes 2000`
+`go run messageGenerator/main.go -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes -messages 2000`

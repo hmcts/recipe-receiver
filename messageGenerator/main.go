@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
@@ -9,7 +10,6 @@ import (
 	"github.com/rs/zerolog/log"
 	"math/rand"
 	"os"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -70,26 +70,34 @@ func main() {
 	zerolog.TimeFieldFormat = time.RFC3339
 
 	var (
-		fullyQualifiedNamespace string
-		queueName               string
-		numberOfMessages        int
+		fullyQualifiedNamespace *string
+		queueName               *string
+		numberOfMessages        *int
 	)
 
-	if len(os.Args) < 3 {
-		fmt.Println("Usage: go run main.go [servicebus hostname] [queue name] [no of messages to create]")
+	fullyQualifiedNamespace = flag.String("service-bus", "", "Host name of the service bus to send messages to")
+	queueName = flag.String("queue", "", "Name of the queue to send messages to")
+	numberOfMessages = flag.Int("messages", 2000, "Number of messages to send to the queue")
+
+	flag.Parse()
+
+	if *fullyQualifiedNamespace == "" {
+		fmt.Println("Service Bus host name must be specified.\nUsage:")
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
+	if *queueName == "" {
+		fmt.Println("Service Bus queue name must be specified.\nUsage:")
+		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
-	fullyQualifiedNamespace = os.Args[1]
-	queueName = os.Args[2]
-	numberOfMessages, err := strconv.Atoi(os.Args[3])
-
-	client, err := azureAuth(fullyQualifiedNamespace)
+	client, err := azureAuth(*fullyQualifiedNamespace)
 	if err != nil {
 		fmt.Printf("Unable to to authenticate: %s", err)
 	}
 
-	serviceBusSender, err := client.NewSender(queueName, nil)
+	serviceBusSender, err := client.NewSender(*queueName, nil)
 	if err != nil {
 		fmt.Printf("Unable to to create service bus sender: %s", err)
 	}
@@ -99,7 +107,7 @@ func main() {
 
 	var wg = &sync.WaitGroup{}
 
-	for i := 0; i < numberOfMessages; i++ {
+	for i := 0; i < *numberOfMessages; i++ {
 		wg.Add(1)
 
 		go func() {
