@@ -22,7 +22,9 @@ elif [[ ${BUILD} == "prod" ]]; then
   git show --no-patch --no-notes --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S' "${GITHUB_SHA}"
 
   TAG="prod-$(git show --no-patch --no-notes --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S' "${GITHUB_SHA}")"
+  sleep 2
+  echo $TAG
   REPO="${REGISTRY_NAME}.azurecr.io/${APP_NAME}"
-  az acr import --force -n "${REGISTRY_NAME}" --subscription "${REGISTRY_SUB}" --source "${REPO}/pr-${GITHUB_EVENT_NUMBER}" -t "${REPO}/${TAG}"
+  az acr import --force -n "${REGISTRY_NAME}" --subscription "${REGISTRY_SUB}" --source "${REPO}:pr-${GITHUB_EVENT_NUMBER}" -t "${REPO}:${TAG}"
 
 fi
