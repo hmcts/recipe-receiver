@@ -1,12 +1,6 @@
 name: Deploy to AKS sds-dev-01
-on:
-  pull_request:
-    paths:
-      - 'main.go'
-      - 'pkg/**'
-      - 'charts/**'
-      - 'scripts/*'
-      - 'go.*'
+on: pull_request
+
 env:
   GITHUB_EVENT_NUMBER: ${{ github.event.number }}
   REGISTRY_NAME: hmctspublic
@@ -18,6 +12,7 @@ env:
   SUBSCRIPTION: 74dacd4f-a248-45bb-a2f0-af700dc4cf68
   KUBE_NAMESPACE: toffee
   QUEUE_NAME: recipes-pr${{ github.event.number }}
+  HELM_VERSION: v3.9.0
 
 jobs:
   buildAndDeploy:
@@ -55,12 +50,16 @@ jobs:
           ./scripts/docker.sh pr-${{ github.event.number }}
         shell: bash
 
-      # Set the target Azure Kubernetes Service (AKS) cluster.
-      - uses: azure/aks-set-context@v1
+      - uses: azure/login@v1
         with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Set the target Azure Kubernetes Service (AKS) cluster.
+      - uses: azure/aks-set-context@v2
+        with:
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+          admin: true
 
       # Generate manifest using helm chart
       - uses: azure/k8s-bake@v2.2
@@ -68,7 +67,7 @@ jobs:
           renderEngine: "helm"
           helmChart: "./charts/recipe-receiver/"
           releaseName: recipe-receiver-pr${{ github.event.number }}
-          helm-version: "v3.9.0"
+          helm-version: ${{ env.HELM_VERSION }}
           overrides: |
             function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:pr-${{ github.event.number }}
             function.environment.QUEUE:${{ env.QUEUE_NAME }}
@@ -77,10 +76,6 @@ jobs:
             function.triggers[0].queueName:${{ env.QUEUE_NAME }}
             function.triggers[0].queueLength:5
         id: bake
-
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Create queue and fill it with messages
       - name: Create queue

@@ -3,12 +3,6 @@ on:
   pull_request:
     types:
       - closed
-    paths:
-      - 'main.go'
-      - 'pkg/**'
-      - 'charts/**'
-      - 'scripts/*'
-      - 'go.*'
 env:
   CLUSTER_NAME: ss-dev-01-aks
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
@@ -27,7 +21,7 @@ jobs:
       - uses: actions/checkout@main
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
-      - uses: azure/aks-set-context@v1
+      - uses: azure/aks-set-context@v2
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ env.CLUSTER_NAME }}

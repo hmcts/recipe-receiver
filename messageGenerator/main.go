@@ -103,6 +103,7 @@ func main() {
 	}
 
 	message := azservicebus.Message{}
+	
 	contentType := "plain/text"
 
 	var wg = &sync.WaitGroup{}
