@@ -22,7 +22,3 @@ elif [[ ${BUILD} == "prod" ]]; then
   az acr import --force -n "${REGISTRY_NAME}" --subscription "${REGISTRY_SUB}" --source "${REPO}/pr-${GITHUB_EVENT_NUMBER}" -t "${REPO}/${TAG}"
 
 fi
-
-
-
-git log -n 1 --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S'
