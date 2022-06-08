@@ -3,12 +3,8 @@ on:
   pull_request:
     types:
       - closed
-    paths:
-      - 'main.go'
-      - 'pkg/**'
-      - 'charts/**'
-      - 'scripts/*'
-      - 'go.*'
+    branches:    
+      - main
 env:
   CLUSTER_NAME: ss-dev-01-aks
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
