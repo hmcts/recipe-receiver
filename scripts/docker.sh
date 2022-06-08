@@ -16,14 +16,8 @@ if [[ ${BUILD} =~ ^pr-.* ]]; then
   docker push "${REGISTRY_NAME}.azurecr.io/${APP_NAME}:${BUILD}"
 
 elif [[ ${BUILD} == "prod" ]]; then
-  echo "SHA:"
-#  git log -n 1 --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S'
-#  git show --no-patch --no-notes --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S' "${GITHUB_SHA}"
-
   TAG="prod-$(git show --no-patch --no-notes --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S' "${GITHUB_SHA}")"
-  sleep 2
-  echo sleep
-  echo $TAG
+  echo "${TAG}"
   REPO="${REGISTRY_NAME}.azurecr.io/${APP_NAME}"
   az acr import --force -n "${REGISTRY_NAME}" --subscription "${REGISTRY_SUB}" --source "${REPO}:pr-${GITHUB_EVENT_NUMBER}" -t "${REPO}:${TAG}"
 
