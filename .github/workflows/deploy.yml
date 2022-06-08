@@ -1,12 +1,8 @@
 name: Deploy to AKS sds-dev-01
 on:
   pull_request:
-    paths:
-      - 'main.go'
-      - 'pkg/**'
-      - 'charts/**'
-      - 'scripts/*'
-      - 'go.*'
+    branches:    
+      - main
 env:
   GITHUB_EVENT_NUMBER: ${{ github.event.number }}
   REGISTRY_NAME: hmctspublic
