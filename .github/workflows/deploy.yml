@@ -55,7 +55,7 @@ jobs:
         working-directory: ./
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
-      - uses: azure/aks-set-context@v1
+      - uses: azure/aks-set-context@v2
         with:
           creds: '${{ secrets.AZURE_CREDENTIALS }}'
           cluster-name: ${{ env.CLUSTER_NAME }}
