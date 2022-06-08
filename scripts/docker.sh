@@ -16,6 +16,8 @@ if [[ ${BUILD} =~ ^pr-.* ]]; then
   docker push "${REGISTRY_NAME}.azurecr.io/${APP_NAME}:${BUILD}"
 
 elif [[ ${BUILD} == "prod" ]]; then
+  echo "SHA:"
+  git show --no-patch --no-notes --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S' "${GITHUB_SHA}"
 
   TAG="prod-$(git show --no-patch --no-notes --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S' "${GITHUB_SHA}")"
   REPO="${REGISTRY_NAME}.azurecr.io/${APP_NAME}"
