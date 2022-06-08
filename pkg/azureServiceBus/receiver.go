@@ -42,7 +42,8 @@ func Receiver(fullyQualifiedNamespace *string, queue *string, mode string) error
 				defer cancel()
 			}()
 
-			messages, err := receiver.ReceiveMessages(ctx,
+			messages, err := receiver.ReceiveMessages(
+				ctx,
 				1,
 				nil,
 			)

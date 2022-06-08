@@ -50,9 +50,8 @@ jobs:
 
       # Container build and push to an Azure Container Registry (ACR)
       - run: |
-          docker build . -t ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
-          docker push ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
-        working-directory: ./
+          ./scripts/docker.sh pr-${{ github.event.number }}
+        shell: bash
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
       - uses: azure/aks-set-context@v1
@@ -69,7 +68,7 @@ jobs:
           releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: "v3.9.0"
           overrides: |
-            function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:${{ github.sha }}
+            function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:pr-${{ github.event.number }}
             function.environment.QUEUE:${{ env.QUEUE_NAME }}
             function.triggers[0].type:azure-servicebus
             function.triggers[0].namespace:${{ env.SERVICE_BUS }}
@@ -98,3 +97,9 @@ jobs:
         run: |
           ./scripts/watch-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
+
+      # Container build and push to an Azure Container Registry (ACR)
+      - run: |
+          ./scripts/docker.sh prod
+        shell: bash
+        if: ${{ success() }}
