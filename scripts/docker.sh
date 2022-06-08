@@ -10,7 +10,7 @@ if [[ ${GITHUB_SHA} == "" ]]; then
   exit 1
 fi
 
-if [[ ${BUILD} =~ ^pr-* ]]; then
+if [[ ${BUILD} =~ ^pr-.* ]]; then
 
   docker build . -t "${REGISTRY_NAME}.azurecr.io/${APP_NAME}:${BUILD}"
   docker push "${REGISTRY_NAME}.azurecr.io/${APP_NAME}:${BUILD}"
