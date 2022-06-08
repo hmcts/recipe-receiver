@@ -17,6 +17,8 @@ if [[ ${BUILD} =~ ^pr-.* ]]; then
 
 elif [[ ${BUILD} == "prod" ]]; then
   echo "SHA:"
+  git log
+  git log -n 1 --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S'
   git show --no-patch --no-notes --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S' "${GITHUB_SHA}"
 
   TAG="prod-$(git show --no-patch --no-notes --pretty=format:"%h-%ad" --date=format:'%Y%m%d%H%M%S' "${GITHUB_SHA}")"
