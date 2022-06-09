@@ -23,7 +23,7 @@ jobs:
       # Set the target Azure Kubernetes Service (AKS) cluster.
       - uses: azure/aks-set-context@v2
         with:
-          creds: '${{ secrets.AZURE_CREDENTIALS }}'
+          admin: true
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
 
