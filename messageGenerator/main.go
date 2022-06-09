@@ -103,7 +103,6 @@ func main() {
 	}
 
 	message := azservicebus.Message{}
-	
 	contentType := "plain/text"
 
 	var wg = &sync.WaitGroup{}
@@ -117,10 +116,11 @@ func main() {
 			recipeIngredients := strings.Join(recipe.ingredients, ", ")
 			messageString := fmt.Sprintf("Name: %s, Ingredients: %s.", recipeName, recipeIngredients)
 
-			message.Body = []byte(messageString)
-			message.ContentType = &contentType
+			recipeMessage := message
+			recipeMessage.Body = []byte(messageString)
+			recipeMessage.ContentType = &contentType
 
-			if err := serviceBusSender.SendMessage(context.TODO(), &message, nil); err != nil {
+			if err := serviceBusSender.SendMessage(context.TODO(), &recipeMessage, nil); err != nil {
 				panic(err)
 			} else {
 				log.Info().Msgf("%s has been sent! Ingredients: %s.", recipeName, recipeIngredients)
