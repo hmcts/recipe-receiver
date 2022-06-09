@@ -3,7 +3,8 @@ on: pull_request
 
 env:
   GITHUB_EVENT_NUMBER: ${{ github.event.number }}
-  REGISTRY_NAME: hmctspublic
+  REGISTRY_NAME: sdshmctspublic
+  REGISTRY_SUB: 5ca62022-6aa2-4cee-aaa7-e7536c8d566c
   CLUSTER_NAME: ss-dev-01-aks
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
   APP_NAME: recipe-receiver
@@ -13,9 +14,12 @@ env:
   KUBE_NAMESPACE: toffee
   QUEUE_NAME: recipes-pr${{ github.event.number }}
   HELM_VERSION: v3.9.0
+  PRODUCT: toffee
 
 jobs:
   buildAndDeploy:
+    env:
+      ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
@@ -69,7 +73,7 @@ jobs:
           releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: ${{ env.HELM_VERSION }}
           overrides: |
-            function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:pr-${{ github.event.number }}
+            function.image:${{ env.ACR_REPO }}:pr-${{ github.event.number }}
             function.environment.QUEUE:${{ env.QUEUE_NAME }}
             function.triggers[0].type:azure-servicebus
             function.triggers[0].namespace:${{ env.SERVICE_BUS }}
