@@ -6,8 +6,8 @@ Demo app that reads messages from an Azure Service Bus queue and logs the messag
 ### Repository secrets
 There 3 secrets that are needed for workflows so they can function properly they are:
 * AZURE_CREDENTIALS - the output from following [these instructions](https://github.com/marketplace/actions/azure-login#configure-deployment-credentials).
-* REGISTRY_USERNAME - username for hmctspublic container registry.
-* REGISTRY_PASSWORD - password for hmctspublic container registry.
+* REGISTRY_USERNAME - username for sdshmctspublic container registry.
+* REGISTRY_PASSWORD - password for sdshmctspublic container registry.
 
 ### Permissions 
 For this repository to be fully function we need to have the correct permissions in place for Keda, the GitHub workflows and the recipe receiver application.
@@ -27,12 +27,12 @@ To allow the workflow to do all of this we need:
 * `Owner` role on the `toffee-shared-infrastructure-stg` resource group
 * `Azure Service Bus Data Owner` role on the `toffee-servicebus-stg` service bus
 * `Contributor` role on the `ss-dev-0-rg` & `ss-dev-01-rg` resource groups
-* `AcrPush` role on the `hmctspublic` repo
+* `AcrPush` role on the `sdshmctspublic` repo
 
 ## Workflow steps
 PR Open:
 * Builds the Recipe Receiver app
-* Publishes the container image to the `hmctspublic` container registry
+* Publishes the container image to the `sdshmctspublic` container registry
 * Creates a new queue on the Toffee Staging Service Bus when a PR is opened
 * Loads the newly created queue with messages
 * Deploys the Keda resources to the SDS DEV AKS cluster
