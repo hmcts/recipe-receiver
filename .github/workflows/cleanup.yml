@@ -20,16 +20,16 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       # Set the target Azure Kubernetes Service (AKS) cluster.
       - uses: azure/aks-set-context@v2
         with:
           admin: true
           cluster-name: ${{ env.CLUSTER_NAME }}
           resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
-
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Clean up PR resources
       - name: Clean up resources
