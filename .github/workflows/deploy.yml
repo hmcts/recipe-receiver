@@ -3,7 +3,8 @@ on: pull_request
 
 env:
   GITHUB_EVENT_NUMBER: ${{ github.event.number }}
-  REGISTRY_NAME: hmctspublic
+  REGISTRY_NAME: sdshmctspublic
+  REGISTRY_SUB: 5ca62022-6aa2-4cee-aaa7-e7536c8d566c
   CLUSTER_NAME: ss-dev-01-aks
   CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
   APP_NAME: recipe-receiver
@@ -13,6 +14,7 @@ env:
   KUBE_NAMESPACE: toffee
   QUEUE_NAME: recipes-pr${{ github.event.number }}
   HELM_VERSION: v3.9.0
+  PRODUCT: toffee
 
 jobs:
   buildAndDeploy:
@@ -46,9 +48,12 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       # Container build and push to an Azure Container Registry (ACR)
-      - run: |
+      - name: Build and Push PR Container Image
+        run: |
           ./scripts/docker.sh pr-${{ github.event.number }}
         shell: bash
+        env:
+          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
 
       - uses: azure/login@v1
         with:
@@ -62,14 +67,17 @@ jobs:
           admin: true
 
       # Generate manifest using helm chart
-      - uses: azure/k8s-bake@v2.2
+      - name: Generate manifests
+        uses: azure/k8s-bake@v2.2
+        env:
+          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
         with:
           renderEngine: "helm"
           helmChart: "./charts/recipe-receiver/"
           releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: ${{ env.HELM_VERSION }}
           overrides: |
-            function.image:${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.APP_NAME }}:pr-${{ github.event.number }}
+            function.image:${{ env.ACR_REPO }}:pr-${{ github.event.number }}
             function.environment.QUEUE:${{ env.QUEUE_NAME }}
             function.triggers[0].type:azure-servicebus
             function.triggers[0].namespace:${{ env.SERVICE_BUS }}
@@ -96,11 +104,16 @@ jobs:
         shell: bash
 
       # Container build and push to an Azure Container Registry (ACR)
-      - run: |
+      - name: Promote PR Image to Prod
+        env:
+          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+        run: |
           ./scripts/docker.sh prod
         shell: bash
         if: ${{ success() }}
 
-      - run: |
+      - name: Az logout
+        run: |
           az logout
         shell: bash
+        if: ${{ always() }}
