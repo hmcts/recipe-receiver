@@ -105,6 +105,8 @@ jobs:
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Promote PR Image to Prod
+        env:
+          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
         run: |
           ./scripts/docker.sh prod
         shell: bash
