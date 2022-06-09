@@ -48,7 +48,8 @@ jobs:
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
       # Container build and push to an Azure Container Registry (ACR)
-      - run: |
+      - name: Build and Push PR Container Image
+        run: |
           ./scripts/docker.sh pr-${{ github.event.number }}
         shell: bash
         env:
@@ -66,7 +67,8 @@ jobs:
           admin: true
 
       # Generate manifest using helm chart
-      - uses: azure/k8s-bake@v2.2
+      - name: Generate manifests
+        uses: azure/k8s-bake@v2.2
         env:
           ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
         with:
@@ -102,11 +104,14 @@ jobs:
         shell: bash
 
       # Container build and push to an Azure Container Registry (ACR)
-      - run: |
+      - name: Promote PR Image to Prod
+        run: |
           ./scripts/docker.sh prod
         shell: bash
         if: ${{ success() }}
 
-      - run: |
+      - name: Az logout
+        run: |
           az logout
         shell: bash
+        if: ${{ always() }}
