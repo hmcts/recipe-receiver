@@ -53,7 +53,8 @@ jobs:
           ./scripts/docker.sh pr-${{ github.event.number }}
         shell: bash
         env:
-          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+          ACR_REGISTRY: ${{ env.REGISTRY_NAME }}.azurecr.io
+          ACR_REPO: ${{ env.PRODUCT }}/${{ env.APP_NAME }}
 
       - uses: azure/login@v1
         with:
@@ -70,14 +71,15 @@ jobs:
       - name: Generate manifests
         uses: azure/k8s-bake@v2.2
         env:
-          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+          ACR_REGISTRY: ${{ env.REGISTRY_NAME }}.azurecr.io
+          ACR_REPO: ${{ env.PRODUCT }}/${{ env.APP_NAME }}
         with:
           renderEngine: "helm"
           helmChart: "./charts/recipe-receiver/"
           releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: ${{ env.HELM_VERSION }}
           overrides: |
-            function.image:${{ env.ACR_REPO }}:pr-${{ github.event.number }}
+            function.image:${{ env.ACR_REGISTRY }}/${{ env.ACR_REPO }}:pr-${{ github.event.number }}
             function.environment.QUEUE:${{ env.QUEUE_NAME }}
             function.triggers[0].type:azure-servicebus
             function.triggers[0].namespace:${{ env.SERVICE_BUS }}
@@ -106,7 +108,8 @@ jobs:
       # Container build and push to an Azure Container Registry (ACR)
       - name: Promote PR Image to Prod
         env:
-          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+          ACR_REGISTRY: ${{ env.REGISTRY_NAME }}.azurecr.io
+          ACR_REPO: ${{ env.PRODUCT }}/${{ env.APP_NAME }}
         run: |
           ./scripts/docker.sh prod
         shell: bash
