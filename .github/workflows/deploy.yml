@@ -141,6 +141,8 @@ jobs:
       - name: Promote PR Image to Prod
         env:
           ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.SDS_PRODUCT }}/${{ env.APP_NAME }}
+          REGISTRY_NAME: ${{ env.SDS_REGISTRY_NAME }}
+          REGISTRY_SUB: ${{ env.SDS_REGISTRY_SUB }}
         run: |
           ./scripts/docker.sh prod
         shell: bash
@@ -183,7 +185,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            token=$(az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
+            token=$(az acr login -n ${{ env.CFT_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
             echo "ACR_TOKEN=${token}" >> $GITHUB_ENV
 
       # Connect to Azure Container Registry (ACR)
@@ -199,8 +201,7 @@ jobs:
           ./scripts/docker.sh pr-${{ github.event.number }}
         shell: bash
         env:
-          ACR_REGISTRY: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
-          ACR_REPO: ${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
+          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
       - uses: azure/aks-set-context@v2
@@ -213,8 +214,7 @@ jobs:
       - name: Generate manifests
         uses: azure/k8s-bake@v2.2
         env:
-          ACR_REGISTRY: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
-          ACR_REPO: ${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
+          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
         with:
           renderEngine: "helm"
           namespace: ${{ env.CFT_KUBE_NAMESPACE }}
@@ -251,8 +251,9 @@ jobs:
       # Container build and push to an Azure Container Registry (ACR)
       - name: Promote PR Image to Prod
         env:
-          ACR_REGISTRY: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
-          ACR_REPO: ${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
+          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
+          REGISTRY_NAME: ${{ env.CFT_REGISTRY_NAME }}
+          REGISTRY_SUB: ${{ env.CFT_REGISTRY_SUB }}
         run: |
           ./scripts/docker.sh prod
         shell: bash
