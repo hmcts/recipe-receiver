@@ -63,7 +63,7 @@ jobs:
         with:
           inlineScript: |
             token=$(az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
-            echo "ACR_TOKEN=::add-mask::${token}" >> $GITHUB_ENV
+            echo "ACR_TOKEN=${token}" >> $GITHUB_ENV
 
 
       # Connect to Azure Container Registry (ACR)
