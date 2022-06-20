@@ -186,7 +186,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az acr login -n ${{ env.SDS_REGISTRY_NAME }}  --expose-token || | jq -r .accessToken | docker login ${{ env.SDS_REGISTRY_NAME }}.azurecr.io -u  00000000-0000-0000-0000-000000000000 --password-stdin
+            az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token || | jq -r .accessToken | docker login ${{ env.SDS_REGISTRY_NAME }}.azurecr.io -u  00000000-0000-0000-0000-000000000000 --password-stdin
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Build and Push PR Container Image
