@@ -4,13 +4,7 @@ set -e
 # PR / prod
 BUILD=$1
 
-if [[ ${GITHUB_SHA} == "" ]]; then
-  echo "No sha found"
-  exit 1
-fi
-
 if [[ ${BUILD} =~ ^pr-.* ]]; then
-
   docker build . -t "${ACR_REPO}:${BUILD}"
   docker push "${ACR_REPO}:${BUILD}"
 

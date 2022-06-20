@@ -54,12 +54,22 @@ jobs:
           GOOS: linux
           GOARCH: amd64
 
-      # Connect to Azure Container Registry (ACR)
-      - uses: azure/docker-login@v1
+#      # Connect to Azure Container Registry (ACR)
+#      - uses: azure/docker-login@v1
+#        with:
+#          login-server: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io
+#          username: ${{ secrets.SDS_REGISTRY_USERNAME }}
+#          password: ${{ secrets.SDS_REGISTRY_PASSWORD }}
+
+      - uses: azure/login@v1
         with:
-          login-server: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io
-          username: ${{ secrets.SDS_REGISTRY_USERNAME }}
-          password: ${{ secrets.SDS_REGISTRY_PASSWORD }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az acr login -n ${{ env.SDS_REGISTRY_NAME }}
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Build and Push PR Container Image
@@ -70,11 +80,6 @@ jobs:
           ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.SDS_PRODUCT }}/${{ env.APP_NAME }}
           REGISTRY_NAME: ${{ env.SDS_REGISTRY_NAME }}
           REGISTRY_SUB: ${{ env.SDS_REGISTRY_SUB }}
-
-
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
       - uses: azure/aks-set-context@v2
@@ -166,12 +171,22 @@ jobs:
           GOOS: linux
           GOARCH: amd64
 
-      # Connect to Azure Container Registry (ACR)
-      - uses: azure/docker-login@v1
+#      # Connect to Azure Container Registry (ACR)
+#      - uses: azure/docker-login@v1
+#        with:
+#          login-server: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
+#          username: ${{ secrets.CFT_REGISTRY_USERNAME }}
+#          password: ${{ secrets.CFT_REGISTRY_PASSWORD }}
+
+      - uses: azure/login@v1
         with:
-          login-server: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
-          username: ${{ secrets.CFT_REGISTRY_USERNAME }}
-          password: ${{ secrets.CFT_REGISTRY_PASSWORD }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Azure CLI script
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az acr login -n ${{ env.SDS_REGISTRY_NAME }}
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Build and Push PR Container Image
@@ -181,10 +196,6 @@ jobs:
         env:
           ACR_REGISTRY: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
           ACR_REPO: ${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
-
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Set the target Azure Kubernetes Service (AKS) cluster.
       - uses: azure/aks-set-context@v2
