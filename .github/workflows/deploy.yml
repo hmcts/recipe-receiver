@@ -98,6 +98,7 @@ jobs:
           ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.SDS_PRODUCT }}/${{ env.APP_NAME }}
         with:
           renderEngine: "helm"
+          namespace: ${{ env.CFT_KUBE_NAMESPACE }}
           helmChart: "./charts/recipe-receiver/"
           releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: ${{ env.HELM_VERSION }}
@@ -216,6 +217,7 @@ jobs:
           ACR_REPO: ${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
         with:
           renderEngine: "helm"
+          namespace: ${{ env.CFT_KUBE_NAMESPACE }}
           helmChart: "./charts/recipe-receiver/"
           releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: ${{ env.HELM_VERSION }}
