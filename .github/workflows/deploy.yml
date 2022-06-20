@@ -54,13 +54,6 @@ jobs:
           GOOS: linux
           GOARCH: amd64
 
-#      # Connect to Azure Container Registry (ACR)
-#      - uses: azure/docker-login@v1
-#        with:
-#          login-server: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io
-#          username: ${{ secrets.SDS_REGISTRY_USERNAME }}
-#          password: ${{ secrets.SDS_REGISTRY_PASSWORD }}
-
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -69,7 +62,17 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken | docker login ${{ env.SDS_REGISTRY_NAME }}.azurecr.io -u  00000000-0000-0000-0000-000000000000 --password-stdin
+            token=$(az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
+            echo "ACR_TOKEN=::add-mask::${token}" >> $GITHUB_ENV
+
+
+      # Connect to Azure Container Registry (ACR)
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io
+          username: 00000000-0000-0000-0000-000000000000
+          password: ${{ env.ACR_TOKEN }}
+
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Build and Push PR Container Image
@@ -171,13 +174,6 @@ jobs:
           GOOS: linux
           GOARCH: amd64
 
-#      # Connect to Azure Container Registry (ACR)
-#      - uses: azure/docker-login@v1
-#        with:
-#          login-server: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
-#          username: ${{ secrets.CFT_REGISTRY_USERNAME }}
-#          password: ${{ secrets.CFT_REGISTRY_PASSWORD }}
-
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -186,7 +182,15 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken | docker login ${{ env.SDS_REGISTRY_NAME }}.azurecr.io -u  00000000-0000-0000-0000-000000000000 --password-stdin
+            token=$(az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
+            echo "ACR_TOKEN=${token}" >> $GITHUB_ENV
+
+      # Connect to Azure Container Registry (ACR)
+      - uses: azure/docker-login@v1
+        with:
+          login-server: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
+          username: 00000000-0000-0000-0000-000000000000
+          password: ${{ secrets.ACR_TOKEN }}
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Build and Push PR Container Image
