@@ -17,6 +17,7 @@ env:
   SDS_SUBSCRIPTION: 74dacd4f-a248-45bb-a2f0-af700dc4cf68
   SDS_KUBE_NAMESPACE: toffee
   SDS_LOCK_NAME: stg-lock
+  SDS_CLUSTER_SUB: 867a878b-cb68-4de5-9741-361ac9e178b6
 
   # CFT vars
   CFT_CLUSTER_NAME: cft-preview-01-aks
@@ -26,6 +27,7 @@ env:
   CFT_SUBSCRIPTION: 8b6ea922-0862-443e-af15-6056e1c9b9a4
   CFT_KUBE_NAMESPACE: cnp
   CFT_LOCK_NAME: prod-lock
+  CFT_CLUSTER_SUB: 8b6ea922-0862-443e-af15-6056e1c9b9a4
 
 jobs:
   cleanup:
