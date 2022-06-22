@@ -57,6 +57,7 @@ jobs:
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          subscription-id: ${{ env.SDS_SUBSCRIPTION }}
 
       - name: Azure CLI script
         uses: azure/CLI@v1
@@ -180,6 +181,7 @@ jobs:
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+          subscription-id: ${{ env.CFT_SUBSCRIPTION }}
 
       - name: Azure CLI script
         uses: azure/CLI@v1
