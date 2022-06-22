@@ -239,9 +239,9 @@ jobs:
           ./scripts/create-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
         env:
-          SB_RESOURCE_GROUP: ${{ env.SDS_SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.SDS_SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.SDS_SUBSCRIPTION }}
+          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
+          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
+          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
 
       # Deploy app to AKS
       - uses: azure/k8s-deploy@v1
@@ -254,6 +254,10 @@ jobs:
         run: |
           ./scripts/watch-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
+        env:
+          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
+          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
+          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Promote PR Image to Prod
