@@ -229,6 +229,7 @@ jobs:
           overrides: |
             function.image:${{ env.ACR_REPO }}:pr-${{ github.event.number }}
             function.environment.QUEUE:${{ env.QUEUE_NAME }}
+            function.environment.FULLY_QUALIFIED_NAMESPACE:${{ env.CFT_SERVICE_BUS }}.servicebus.windows.net
             function.triggers[0].type:azure-servicebus
             function.triggers[0].namespace:${{ env.CFT_SERVICE_BUS }}
             function.triggers[0].queueName:${{ env.QUEUE_NAME }}
