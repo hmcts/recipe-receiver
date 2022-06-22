@@ -79,7 +79,7 @@ jobs:
         with:
           login-server: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io
           username: 00000000-0000-0000-0000-000000000000
-          password: ${{ env.ACR_TOKEN }}
+          password: ${{ env.SDS_ACR_TOKEN }}
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Build and Push PR Container Image - SDS
@@ -96,7 +96,7 @@ jobs:
         with:
           login-server: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
           username: 00000000-0000-0000-0000-000000000000
-          password: ${{ env.ACR_TOKEN }}
+          password: ${{ env.CFT_ACR_TOKEN }}
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Build and Push PR Container Image - CFT
