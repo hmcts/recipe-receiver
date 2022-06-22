@@ -233,7 +233,7 @@ jobs:
             function.triggers[0].namespace:${{ env.CFT_SERVICE_BUS }}
             function.triggers[0].queueName:${{ env.QUEUE_NAME }}
             function.triggers[0].queueLength:5
-            function.aadIdentityName:plum
+            function.aadIdentityName:cnp
         id: bake
 
       # Create queue and fill it with messages
