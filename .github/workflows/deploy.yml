@@ -13,6 +13,7 @@ env:
   SDS_PRODUCT: toffee
   SDS_REGISTRY_NAME: sdshmctspublic
   SDS_REGISTRY_SUB: 5ca62022-6aa2-4cee-aaa7-e7536c8d566c
+  SDS_CLUSTER_SUB: 867a878b-cb68-4de5-9741-361ac9e178b6
   SDS_CLUSTER_NAME: ss-dev-01-aks
   SDS_CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
   SDS_KUBE_NAMESPACE: toffee
@@ -63,7 +64,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription ${{ env.SDS_SUBSCRIPTION }}
+            az account set --subscription ${{ env.SDS_CLUSTER_SUB }}
             token=$(az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
             echo "ACR_TOKEN=${token}" >> $GITHUB_ENV
 
