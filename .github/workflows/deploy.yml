@@ -227,7 +227,7 @@ jobs:
           releaseName: recipe-receiver-pr${{ github.event.number }}
           helm-version: ${{ env.HELM_VERSION }}
           overrides: |
-            function.image:${{ env.ACR_REGISTRY }}/${{ env.ACR_REPO }}:pr-${{ github.event.number }}
+            function.image:${{ env.ACR_REPO }}:pr-${{ github.event.number }}
             function.environment.QUEUE:${{ env.QUEUE_NAME }}
             function.triggers[0].type:azure-servicebus
             function.triggers[0].namespace:${{ env.CFT_SERVICE_BUS }}
