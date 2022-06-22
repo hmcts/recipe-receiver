@@ -39,14 +39,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-#      # Set the target Azure Kubernetes Service (AKS) cluster.
-#      - name: Switch to SDS AKS context
-#        uses: azure/aks-set-context@v2
-#        with:
-#          admin: true
-#          cluster-name: ${{ env.SDS_CLUSTER_NAME }}
-#          resource-group: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
-
       # Clean up PR resources
       - name: Clean up SDS resources
         run: |
@@ -62,13 +54,6 @@ jobs:
           CLUSTER_RESOURCE_GROUP: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
           CLUSTER_NAME: ${{ env.SDS_CLUSTER_NAME }}
 
-#      # Set the target Azure Kubernetes Service (AKS) cluster.
-#      - name: Switch to CFT AKS context
-#        uses: azure/aks-set-context@v2
-#        with:
-#          admin: true
-#          cluster-name: ${{ env.CFT_CLUSTER_NAME }}
-#          resource-group: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
   cleanupCFT:
     runs-on: ubuntu-latest
     steps:
