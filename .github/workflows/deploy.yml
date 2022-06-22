@@ -22,10 +22,11 @@ env:
   SDS_LOCK_NAME: stg-lock
 
   # CFT vars
-  CFT_SUBSCRIPTION: 8b6ea922-0862-443e-af15-6056e1c9b9a4
+  CFT_SUBSCRIPTION: 1c4f0704-a29e-403d-b719-b90c34ef14c9
   CFT_PRODUCT: plum
   CFT_REGISTRY_NAME: hmctspublic
   CFT_REGISTRY_SUB: 8999dec3-0104-4a27-94ee-6588559729d1
+  CFT_CLUSTER_SUB: 96c274ce-846d-4e48-89a7-d528432298a7
   CFT_CLUSTER_NAME: cft-preview-01-aks
   CFT_CLUSTER_RESOURCE_GROUP: cft-preview-01-rg
   CFT_KUBE_NAMESPACE: cnp
@@ -188,7 +189,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription ${{ env.CFT_SUBSCRIPTION }}
+            az account set --subscription ${{ env.CFT_CLUSTER_SUB }}
             token=$(az acr login -n ${{ env.CFT_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
             echo "ACR_TOKEN=${token}" >> $GITHUB_ENV
 
