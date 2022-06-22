@@ -37,13 +37,13 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Set the target Azure Kubernetes Service (AKS) cluster.
-      - name: Switch to SDS AKS context
-        uses: azure/aks-set-context@v2
-        with:
-          admin: true
-          cluster-name: ${{ env.SDS_CLUSTER_NAME }}
-          resource-group: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
+#      # Set the target Azure Kubernetes Service (AKS) cluster.
+#      - name: Switch to SDS AKS context
+#        uses: azure/aks-set-context@v2
+#        with:
+#          admin: true
+#          cluster-name: ${{ env.SDS_CLUSTER_NAME }}
+#          resource-group: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
 
       # Clean up PR resources
       - name: Clean up SDS resources
@@ -56,14 +56,17 @@ jobs:
           SB_RESOURCE_GROUP: ${{ env.SDS_SB_RESOURCE_GROUP }}
           SUBSCRIPTION: ${{ env.SDS_SUBSCRIPTION }}
           KUBE_NAMESPACE: ${{ env.SDS_KUBE_NAMESPACE }}
+          CLUSTER_SUB: ${{ env.SDS_CLUSTER_SUB }}
+          CLUSTER_RESOURCE_GROUP: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
+          CLUSTER_NAME: ${{ env.SDS_CLUSTER_NAME }}
 
-      # Set the target Azure Kubernetes Service (AKS) cluster.
-      - name: Switch to CFT AKS context
-        uses: azure/aks-set-context@v2
-        with:
-          admin: true
-          cluster-name: ${{ env.CFT_CLUSTER_NAME }}
-          resource-group: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
+#      # Set the target Azure Kubernetes Service (AKS) cluster.
+#      - name: Switch to CFT AKS context
+#        uses: azure/aks-set-context@v2
+#        with:
+#          admin: true
+#          cluster-name: ${{ env.CFT_CLUSTER_NAME }}
+#          resource-group: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
 
       # Clean up PR resources
       - name: Clean up CFT resources
@@ -76,3 +79,6 @@ jobs:
           SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
           SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
           KUBE_NAMESPACE: ${{ env.CFT_KUBE_NAMESPACE }}
+          CLUSTER_SUB: ${{ env.CFT_CLUSTER_SUB }}
+          CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
+          CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
