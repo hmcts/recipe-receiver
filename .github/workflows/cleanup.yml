@@ -30,7 +30,7 @@ env:
   CFT_CLUSTER_SUB: 8b6ea922-0862-443e-af15-6056e1c9b9a4
 
 jobs:
-  cleanup:
+  cleanupSDS:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
@@ -69,7 +69,9 @@ jobs:
 #          admin: true
 #          cluster-name: ${{ env.CFT_CLUSTER_NAME }}
 #          resource-group: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
-
+  cleanupCFT:
+    runs-on: ubuntu-latest
+    steps:
       # Clean up PR resources
       - name: Clean up CFT resources
         run: |
