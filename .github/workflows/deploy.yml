@@ -63,7 +63,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription ${{ env.CFT_SUBSCRIPTION }}
+            az account set --subscription ${{ env.SDS_SUBSCRIPTION }}
             token=$(az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
             echo "ACR_TOKEN=${token}" >> $GITHUB_ENV
 
