@@ -114,6 +114,11 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
@@ -199,6 +204,11 @@ jobs:
     needs: buildAndPush
     steps:
       - uses: actions/checkout@main
+
+      - name: Set up Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
 
       - uses: azure/login@v1
         with:
