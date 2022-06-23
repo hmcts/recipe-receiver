@@ -4,7 +4,7 @@ set -e
 
 # Watch the queue for 5 minutes then fail if the queue isn't empty.
 #
-wait_until=$(date +'%l%M%S'-d '5 mins')
+wait_until=$(date +'%l%M%S' -d '5 mins')
 
 # watch queue until it is empty
 until [[ "${CURRENT_QUEUE_SIZE}" == "0" ]]; do
