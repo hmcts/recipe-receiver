@@ -5,9 +5,9 @@ on:
       - closed
 env:
   # Common vars
-  PR_NUMBER: ${{ github.event.number }}
   QUEUE_NAME: recipes-pr${{ github.event.number }}
   APP_NAME: recipe-receiver
+  GITHUB_EVENT_NUMBER: ${{ github.event.number }}
 
   # SDS vars
   SDS_CLUSTER_NAME: ss-dev-01-aks
@@ -40,7 +40,19 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       # Clean up PR resources
-      - name: Clean up SDS resources
+      - name: Delete AKS resources
+        run: |
+          ./scripts/k8s.sh delete
+        shell: bash
+        env:
+          SB_RESOURCE_GROUP: ${{ env.SDS_SB_RESOURCE_GROUP }}
+          SERVICE_BUS: ${{ env.SDS_SERVICE_BUS }}
+          KUBE_NAMESPACE: ${{ env.SDS_KUBE_NAMESPACE }}
+          CLUSTER_SUB: ${{ env.SDS_CLUSTER_SUB }}
+          CLUSTER_RESOURCE_GROUP: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
+          CLUSTER_NAME: ${{ env.SDS_CLUSTER_NAME }}
+
+      - name: Delete PR queue
         run: |
           ./scripts/cleanup.sh ${{ env.QUEUE_NAME }}
         shell: bash
@@ -78,7 +90,7 @@ jobs:
           CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
           CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
 
-      - name: Clean up queue
+      - name: Delete PR queue
         run: |
           ./scripts/cleanup-infra.sh ${{ env.QUEUE_NAME }}
         shell: bash
