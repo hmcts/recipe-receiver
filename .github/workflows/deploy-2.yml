@@ -129,6 +129,8 @@ jobs:
         with:
           inlineScript: |
             az aks get-credentials --file ${{ env.KUBECONFIG_PATH }} --subscription ${{ env.SDS_CLUSTER_SUB }} --resource-group "${{ env.SDS_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.SDS_CLUSTER_NAME }}" --admin 
+            az aks get-credentials --file /github/workspace  --subscription ${{ env.SDS_CLUSTER_SUB }} --resource-group "${{ env.SDS_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.SDS_CLUSTER_NAME }}" --admin 
+            ls /github/workspace
             echo "KUBECONFIG=${{ env.KUBECONFIG_PATH }}" >> $GITHUB_ENV
 
       - name: AKS config
