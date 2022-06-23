@@ -139,13 +139,13 @@ jobs:
           ./scripts/k8s.sh deploy
         shell: bash
         env:
-          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
-          KUBE_NAMESPACE: ${{ env.CFT_KUBE_NAMESPACE }}
-          CLUSTER_SUB: ${{ env.CFT_CLUSTER_SUB }}
-          CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
-          CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
+          SB_RESOURCE_GROUP: ${{ env.SDS_SB_RESOURCE_GROUP }}
+          SERVICE_BUS: ${{ env.SDS_SERVICE_BUS }}
+          SUBSCRIPTION: ${{ env.SDS_SUBSCRIPTION }}
+          KUBE_NAMESPACE: ${{ env.SDS_KUBE_NAMESPACE }}
+          CLUSTER_SUB: ${{ env.SDS_CLUSTER_SUB }}
+          CLUSTER_RESOURCE_GROUP: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
+          CLUSTER_NAME: ${{ env.SDS_CLUSTER_NAME }}
 
       # Wait for message count to reach 0
       - name: Watch queue
