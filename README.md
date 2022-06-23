@@ -26,7 +26,7 @@ The workflow authenticates to Azure using Service Principal credentials stored i
 To allow the workflow to do all of this we need:
 * `Owner` role on the `toffee-shared-infrastructure-stg` resource group
 * `Azure Service Bus Data Owner` role on the `toffee-servicebus-stg` service bus
-* `Contributor` role on the `ss-dev-0-rg` & `ss-dev-01-rg` resource groups
+* `Contributor` role on the `ss-dev-01-rg` & `ss-dev-01-rg` resource groups
 * `AcrPush` role on the `sdshmctspublic` repo
 
 ## Workflow steps

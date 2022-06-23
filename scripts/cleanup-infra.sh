@@ -1,13 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-LABEL="recipe-receiver-pr${PR_NUMBER}-function"
-LOCK_NAME="stg-lock"
-
-# Delete kubernetes resources
-kubectl delete triggerauthentications.keda.sh -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name="${LABEL}"
-kubectl delete scaledjobs.keda.sh -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name="${LABEL}"
-
 # Remove lock on resource group
 az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
 
@@ -18,7 +11,7 @@ az servicebus queue delete \
   --subscription "${SUBSCRIPTION}" \
   --name "${QUEUE_NAME}"
 
-# Make sure queue has ben deleted
+# Make sure queue has been deleted
 count=3
 until [[ $deleted == "true" ]] || [[ $count == 0 ]]; do
   if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE_NAME}") ]]; then
