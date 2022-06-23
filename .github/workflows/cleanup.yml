@@ -54,7 +54,7 @@ jobs:
 
       - name: Delete PR queue
         run: |
-          ./scripts/cleanup.sh ${{ env.QUEUE_NAME }}
+          ./scripts/cleanup-infra.sh ${{ env.QUEUE_NAME }}
         shell: bash
         env:
           LOCK_NAME: ${{ env.SDS_LOCK_NAME }}
