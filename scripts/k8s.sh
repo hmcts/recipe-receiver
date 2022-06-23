@@ -19,7 +19,7 @@ az aks get-credentials --subscription "${CLUSTER_SUB}" \
 
 if [[ $ACTION == "deploy" ]]; then
 
-  helm dependency build
+  helm dependency build "${CHART_DIR}"
   helm upgrade --install "${RELEASE_NAME}" "${CHART_DIR}" -n "${KUBE_NAMESPACE}" \
       --set function.image:"${ACR_REPO}"=pr-"${GITHUB_EVENT_NUMBER}" \
       --set function.environment.QUEUE="${QUEUE_NAME}" \
