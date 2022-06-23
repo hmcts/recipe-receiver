@@ -8,7 +8,7 @@ env:
   APP_NAME: recipe-receiver
   QUEUE_NAME: recipes-pr${{ github.event.number }}
   HELM_VERSION: v3.9.0
-  VAR_FILE_PATH=${{ github.workspace }}/.github/workflows
+  VAR_FILE_PATH: ${{ github.workspace }}/.github/workflows
 
 jobs:
   buildAndPush:
