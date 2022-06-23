@@ -63,10 +63,24 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+
+
       # Clean up PR resources
-      - name: Clean up CFT resources
+      - name: Delete AKS resources
         run: |
-          ./scripts/cleanup.sh ${{ env.QUEUE_NAME }}
+          ./scripts/k8s.sh delete
+        shell: bash
+        env:
+          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
+          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
+          KUBE_NAMESPACE: ${{ env.CFT_KUBE_NAMESPACE }}
+          CLUSTER_SUB: ${{ env.CFT_CLUSTER_SUB }}
+          CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
+          CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
+
+      - name: Clean up queue
+        run: |
+          ./scripts/cleanup-infra.sh ${{ env.QUEUE_NAME }}
         shell: bash
         env:
           LOCK_NAME: ${{ env.CFT_LOCK_NAME }}

@@ -227,6 +227,9 @@ jobs:
           SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
           SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
           KUBE_NAMESPACE: ${{ env.CFT_KUBE_NAMESPACE }}
+          CLUSTER_SUB: ${{ env.CFT_CLUSTER_SUB }}
+          CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
+          CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
 
 #      - name: AKS config
 #        run: |

@@ -3,12 +3,6 @@ set -e
 
 LABEL="recipe-receiver-pr${PR_NUMBER}-function"
 
-az aks get-credentials --subscription "${CLUSTER_SUB}" --resource-group "${CLUSTER_RESOURCE_GROUP}" --name "${CLUSTER_NAME}" --admin
-
-# Delete kubernetes resources
-kubectl delete triggerauthentications.keda.sh -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name="${LABEL}"
-kubectl delete scaledjobs.keda.sh -n "${KUBE_NAMESPACE}" -l app.kubernetes.io/name="${LABEL}"
-
 # Remove lock on resource group
 az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
 
