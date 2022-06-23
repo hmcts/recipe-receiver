@@ -13,6 +13,7 @@ az aks get-credentials --subscription "${CLUSTER_SUB}" \
                        --resource-group "${CLUSTER_RESOURCE_GROUP}" \
                        --name "${CLUSTER_NAME}" \
                        --admin
+
 #                       --file "${KUBECONFIG_PATH}" \
 
 
