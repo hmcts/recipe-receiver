@@ -8,7 +8,6 @@ env:
   APP_NAME: recipe-receiver
   QUEUE_NAME: recipes-pr${{ github.event.number }}
   HELM_VERSION: v3.9.0
-  KUBECONFIG_PATH: ${{ github.workspace }}/config
 
   # SDS vars
   SDS_SUBSCRIPTION: 74dacd4f-a248-45bb-a2f0-af700dc4cf68
@@ -124,32 +123,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: AKS config
-        run: |
-          az aks get-credentials --file ${{ env.KUBECONFIG_PATH }} --subscription ${{ env.SDS_CLUSTER_SUB }} --resource-group "${{ env.SDS_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.SDS_CLUSTER_NAME }}" --admin --file ${{ env.KUBECONFIG_PATH }}
-          echo "KUBECONFIG=${{ env.KUBECONFIG_PATH }}" >> $GITHUB_ENV
-        shell: bash
-
-      # Generate manifest using helm chart
-      - name: Generate manifests
-        uses: azure/k8s-bake@v2.2
-        env:
-          ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.SDS_PRODUCT }}/${{ env.APP_NAME }}
-        with:
-          renderEngine: "helm"
-          namespace: ${{ env.CFT_KUBE_NAMESPACE }}
-          helmChart: "./charts/recipe-receiver/"
-          releaseName: recipe-receiver-pr${{ env.GITHUB_EVENT_NUMBER }}
-          helm-version: ${{ env.HELM_VERSION }}
-          overrides: |
-            function.image:${{ env.ACR_REPO }}:pr-${{ env.GITHUB_EVENT_NUMBER }}
-            function.environment.QUEUE:${{ env.QUEUE_NAME }}
-            function.triggers[0].type:azure-servicebus
-            function.triggers[0].namespace:${{ env.SDS_SERVICE_BUS }}
-            function.triggers[0].queueName:${{ env.QUEUE_NAME }}
-            function.triggers[0].queueLength:5
-        id: bake
-
       # Create queue and fill it with messages
       - name: Create queue
         run: |
@@ -160,11 +133,19 @@ jobs:
           SERVICE_BUS: ${{ env.SDS_SERVICE_BUS }}
           SUBSCRIPTION: ${{ env.SDS_SUBSCRIPTION }}
 
-      # Deploy app to AKS
-      - uses: azure/k8s-deploy@v1
-        with:
-          manifests: ${{ steps.bake.outputs.manifestsBundle }}
-          namespace: ${{ env.SDS_KUBE_NAMESPACE }}
+      # Deploy to AKS
+      - name: Deploy to AKS
+        run: |
+          ./scripts/k8s.sh deploy
+        shell: bash
+        env:
+          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
+          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
+          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
+          KUBE_NAMESPACE: ${{ env.CFT_KUBE_NAMESPACE }}
+          CLUSTER_SUB: ${{ env.CFT_CLUSTER_SUB }}
+          CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
+          CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
 
       # Wait for message count to reach 0
       - name: Watch queue
@@ -218,6 +199,7 @@ jobs:
           SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
           SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
 
+      # Deploy to AKS
       - name: Deploy to AKS
         run: |
           ./scripts/k8s.sh deploy
@@ -230,40 +212,6 @@ jobs:
           CLUSTER_SUB: ${{ env.CFT_CLUSTER_SUB }}
           CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
           CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
-
-#      - name: AKS config
-#        run: |
-#          az aks get-credentials --file ${{ env.KUBECONFIG_PATH }} --subscription ${{ env.CFT_CLUSTER_SUB }} --resource-group "${{ env.CFT_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.CFT_CLUSTER_NAME }}" --admin --file ${{ env.KUBECONFIG_PATH }}
-#          echo "KUBECONFIG=${{ env.KUBECONFIG_PATH }}" >> $GITHUB_ENV
-#        shell: bash
-
-#      # Generate manifest using helm chart
-#      - name: Generate manifests
-#        uses: azure/k8s-bake@v2.2
-#        env:
-#          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
-#        with:
-#          renderEngine: "helm"
-#          namespace: ${{ env.CFT_KUBE_NAMESPACE }}
-#          helmChart: "./charts/recipe-receiver/"
-#          releaseName: recipe-receiver-pr${{ env.GITHUB_EVENT_NUMBER }}
-#          helm-version: ${{ env.HELM_VERSION }}
-#          overrides: |
-#            function.image:${{ env.ACR_REPO }}:pr-${{ env.GITHUB_EVENT_NUMBER }}
-#            function.environment.QUEUE:${{ env.QUEUE_NAME }}
-#            function.environment.FULLY_QUALIFIED_NAMESPACE:${{ env.CFT_SERVICE_BUS }}.servicebus.windows.net
-#            function.triggers[0].type:azure-servicebus
-#            function.triggers[0].namespace:${{ env.CFT_SERVICE_BUS }}
-#            function.triggers[0].queueName:${{ env.QUEUE_NAME }}
-#            function.triggers[0].queueLength:5
-#            function.aadIdentityName:cnp
-#        id: bake
-#
-#      # Deploy app to AKS
-#      - uses: azure/k8s-deploy@v1
-#        with:
-#          manifests: ${{ steps.bake.outputs.manifestsBundle }}
-#          namespace: ${{ env.CFT_KUBE_NAMESPACE }}
 
       # Wait for message count to reach 0
       - name: Watch queue
