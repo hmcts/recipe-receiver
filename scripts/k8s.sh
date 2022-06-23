@@ -14,10 +14,7 @@ az aks get-credentials --subscription "${CLUSTER_SUB}" \
                        --name "${CLUSTER_NAME}" \
                        --admin
 
-#                       --file "${KUBECONFIG_PATH}" \
-
-
-if [[ $ACTION == "deploy" ]]; then
+if [[ ${ACTION} == "deploy" ]]; then
 
   helm repo add function https://hmctspublic.azurecr.io/helm/v1/repo
   helm dependency build "${CHART_DIR}"
@@ -28,11 +25,15 @@ if [[ $ACTION == "deploy" ]]; then
       --set function.triggers[0].type=azure-servicebus \
       --set function.triggers[0].namespace="${SERVICE_BUS}" \
       --set function.triggers[0].queueName="${QUEUE_NAME}" \
-      --set function.triggers[0].queueLength=5 --wait
+      --set function.triggers[0].queueLength=5 \
+      --wait
 
-elif [[ $ACTION == "delete" ]]; then
+elif [[ ${ACTION} == "delete" ]]; then
 
-  helm uninstall -n "${KUBE_NAMESPACE}" "${RELEASE_NAME}" --wait
+  if [[ $(helm list --short --filter recipe) != "" ]]; then
 
+    helm uninstall -n "${KUBE_NAMESPACE}" "${RELEASE_NAME}" --wait
+
+  fi
 fi
 
