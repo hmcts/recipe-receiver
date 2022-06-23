@@ -20,12 +20,12 @@ az aks get-credentials --subscription "${CLUSTER_SUB}" \
 if [[ $ACTION == "deploy" ]]; then
 
   helm upgrade --install "${RELEASE_NAME}" "${CHART_DIR}" -n "${KUBE_NAMESPACE}" \
-      --set function.image:"${ACR_REPO}":pr-"${GITHUB_EVENT_NUMBER}" \
-      --set function.environment.QUEUE:"${QUEUE_NAME}" \
-      --set function.triggers[0].type:azure-servicebus \
-      --set function.triggers[0].namespace:"${SERVICE_BUS}" \
-      --set function.triggers[0].queueName:"${QUEUE_NAME}" \
-      --set function.triggers[0].queueLength:5 --wait
+      --set function.image:"${ACR_REPO}"=pr-"${GITHUB_EVENT_NUMBER}" \
+      --set function.environment.QUEUE="${QUEUE_NAME}" \
+      --set function.triggers[0].type=azure-servicebus \
+      --set function.triggers[0].namespace="${SERVICE_BUS}" \
+      --set function.triggers[0].queueName="${QUEUE_NAME}" \
+      --set function.triggers[0].queueLength=5 --wait
 
 elif [[ $ACTION == "delete" ]]; then
 
