@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -e
 
-LABEL="recipe-receiver-pr${GITHUB_EVENT_NUMBER}-function"
-
 # Remove lock on resource group
 az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
 
