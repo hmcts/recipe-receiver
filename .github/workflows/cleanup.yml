@@ -20,7 +20,7 @@ jobs:
 
       - name: Load ${{ matrix.project }} vars
         run: |
-          cat ${{ env.VAR_FILE }} >> $GITHUB_ENV
+          cat ${VAR_FILE} >> $GITHUB_ENV
         shell: bash
         env:
           VAR_FILE: ${{ github.workspace }}/.github/workflows/${{ matrix.project }}.env
