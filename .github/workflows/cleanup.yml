@@ -24,7 +24,7 @@ env:
   CFT_CLUSTER_RESOURCE_GROUP: cft-preview-01-rg
   CFT_SERVICE_BUS: plum-servicebus-aat
   CFT_SB_RESOURCE_GROUP: plum-shared-infrastructure-aat
-  CFT_SUBSCRIPTION: 8b6ea922-0862-443e-af15-6056e1c9b9a4
+  CFT_SUBSCRIPTION: 1c4f0704-a29e-403d-b719-b90c34ef14c9
   CFT_KUBE_NAMESPACE: cnp
   CFT_LOCK_NAME: prod-lock
   CFT_CLUSTER_SUB: 8b6ea922-0862-443e-af15-6056e1c9b9a4
