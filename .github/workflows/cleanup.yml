@@ -75,8 +75,6 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-
-
       # Clean up PR resources
       - name: Delete AKS resources
         run: |
