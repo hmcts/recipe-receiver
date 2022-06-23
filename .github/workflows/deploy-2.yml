@@ -123,27 +123,12 @@ jobs:
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#
-#      - name: Set context
-#        uses: azure/CLI@v1
-#        with:
-#          inlineScript: |
-#            az aks get-credentials --file ${{ env.KUBECONFIG_PATH }} --subscription ${{ env.SDS_CLUSTER_SUB }} --resource-group "${{ env.SDS_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.SDS_CLUSTER_NAME }}" --admin
-#            az aks get-credentials --file /github/workspace  --subscription ${{ env.SDS_CLUSTER_SUB }} --resource-group "${{ env.SDS_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.SDS_CLUSTER_NAME }}" --admin
-#            ls /github/workspace
-#            echo "KUBECONFIG=${{ env.KUBECONFIG_PATH }}" >> $GITHUB_ENV
 
       - name: AKS config
         run: |
           az aks get-credentials --file ${{ env.KUBECONFIG_PATH }} --subscription ${{ env.SDS_CLUSTER_SUB }} --resource-group "${{ env.SDS_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.SDS_CLUSTER_NAME }}" --admin --file ${{ env.KUBECONFIG_PATH }}
           echo "KUBECONFIG=${{ env.KUBECONFIG_PATH }}" >> $GITHUB_ENV
         shell: bash
-#      # Set the target Azure Kubernetes Service (AKS) cluster.
-#      - uses: azure/aks-set-context@v2
-#        with:
-#          cluster-name: ${{ env.SDS_CLUSTER_NAME }}
-#          resource-group: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
-#          admin: true
 
       # Generate manifest using helm chart
       - name: Generate manifests
@@ -222,20 +207,12 @@ jobs:
       - uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
-#
-#      - name: Set context
-#        uses: azure/CLI@v1
-#        with:
-#          inlineScript: |
-#            az aks get-credentials --file ${{ env.KUBECONFIG_PATH }} --subscription ${{ env.CFT_CLUSTER_SUB }} --resource-group "${{ env.CFT_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.CFT_CLUSTER_NAME }}" --admin --file ${{ env.KUBECONFIG_PATH }}
-#            echo "KUBECONFIG=${{ env.KUBECONFIG_PATH }}" >> $GITHUB_ENV
 
       - name: AKS config
         run: |
           az aks get-credentials --file ${{ env.KUBECONFIG_PATH }} --subscription ${{ env.CFT_CLUSTER_SUB }} --resource-group "${{ env.CFT_CLUSTER_RESOURCE_GROUP }}" --name "${{ env.CFT_CLUSTER_NAME }}" --admin --file ${{ env.KUBECONFIG_PATH }}
           echo "KUBECONFIG=${{ env.KUBECONFIG_PATH }}" >> $GITHUB_ENV
         shell: bash
-
 
       # Generate manifest using helm chart
       - name: Generate manifests
