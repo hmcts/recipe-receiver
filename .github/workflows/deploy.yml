@@ -49,14 +49,14 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription ${{ env.SDS_CLUSTER_SUB }}
-            sds_token=$(az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
+            az account set --subscription ${{ env.CLUSTER_SUB }}
+            sds_token=$(az acr login -n ${{ env.REGISTRY_NAME }} --expose-token | jq -r .accessToken)
             echo "SDS_ACR_TOKEN=${sds_token}" >> $GITHUB_ENV
 
       # Connect to Azure Container Registry (ACR)
       - uses: azure/docker-login@v1
         with:
-          login-server: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io
+          login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
           username: 00000000-0000-0000-0000-000000000000
           password: ${{ env.SDS_ACR_TOKEN }}
 
@@ -66,9 +66,9 @@ jobs:
           ./scripts/docker.sh pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
         env:
-          ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.SDS_PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.SDS_REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.SDS_REGISTRY_SUB }}
+          ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
+          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
 
       - name: Load CFT vars
         run: |
@@ -81,14 +81,14 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription ${{ env.CFT_CLUSTER_SUB }}
-            cft_token=$(az acr login -n ${{ env.CFT_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
+            az account set --subscription ${{ env.CLUSTER_SUB }}
+            cft_token=$(az acr login -n ${{ env.REGISTRY_NAME }} --expose-token | jq -r .accessToken)
             echo "CFT_ACR_TOKEN=${cft_token}" >> $GITHUB_ENV
 
       # Connect to Azure Container Registry (ACR)
       - uses: azure/docker-login@v1
         with:
-          login-server: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
+          login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
           username: 00000000-0000-0000-0000-000000000000
           password: ${{ env.CFT_ACR_TOKEN }}
 
@@ -98,9 +98,9 @@ jobs:
           ./scripts/docker.sh pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
         env:
-          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.CFT_REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.CFT_REGISTRY_SUB }}
+          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
+          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
 
   deploy:
     strategy:
