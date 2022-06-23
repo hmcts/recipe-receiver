@@ -18,16 +18,17 @@ jobs:
     steps:
       - uses: actions/checkout@main
 
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
       - name: Load ${{ matrix.project }} vars
         run: |
           cat ${VAR_FILE} >> $GITHUB_ENV
         shell: bash
         env:
-          VAR_FILE: ${{ github.workspace }}/workflows/${{ matrix.project }}.env
+          VAR_FILE: ${{ github.workspace }}/.github/workflows/${{ matrix.project }}.env
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       # Clean up PR resources
       - name: Delete AKS resources
         run: |
