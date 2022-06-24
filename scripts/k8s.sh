@@ -26,8 +26,7 @@ if [[ ${ACTION} == "deploy" ]]; then
       --set function.triggers[0].type=azure-servicebus \
       --set function.triggers[0].namespace="${SERVICE_BUS}" \
       --set function.triggers[0].queueName="${QUEUE_NAME}" \
-      --set function.triggers[0].queueLength=5 \
-      --set function.aadIdentityName=
+      --set function.triggers[0].queueLength=5
       --wait
 
 elif [[ ${ACTION} == "delete" ]]; then
