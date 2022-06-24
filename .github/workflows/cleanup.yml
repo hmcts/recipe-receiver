@@ -1,8 +1,9 @@
 name: Cleanup Resources
-on:
-  pull_request:
-    types:
-      - closed
+on: pull_request
+#on:
+#  pull_request:
+#    types:
+#      - closed
 env:
   # Common vars
   QUEUE_NAME: recipes-pr${{ github.event.number }}
@@ -34,24 +35,8 @@ jobs:
         run: |
           ./scripts/k8s.sh delete
         shell: bash
-        env:
-          SB_RESOURCE_GROUP: ${{ env.SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.SERVICE_BUS }}
-          KUBE_NAMESPACE: ${{ env.KUBE_NAMESPACE }}
-          CLUSTER_SUB: ${{ env.CLUSTER_SUB }}
-          CLUSTER_RESOURCE_GROUP: ${{ env.CLUSTER_RESOURCE_GROUP }}
-          CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
 
       - name: Delete PR queue
         run: |
           ./scripts/cleanup-infra.sh ${{ env.QUEUE_NAME }}
         shell: bash
-        env:
-          LOCK_NAME: ${{ env.LOCK_NAME }}
-          SERVICE_BUS: ${{ env.SERVICE_BUS }}
-          SB_RESOURCE_GROUP: ${{ env.SB_RESOURCE_GROUP }}
-          SUBSCRIPTION: ${{ env.SUBSCRIPTION }}
-          KUBE_NAMESPACE: ${{ env.KUBE_NAMESPACE }}
-          CLUSTER_SUB: ${{ env.CLUSTER_SUB }}
-          CLUSTER_RESOURCE_GROUP: ${{ env.CLUSTER_RESOURCE_GROUP }}
-          CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
