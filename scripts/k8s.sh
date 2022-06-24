@@ -31,9 +31,9 @@ if [[ ${ACTION} == "deploy" ]]; then
       --wait
 
 elif [[ ${ACTION} == "delete" ]]; then
-  echo "Helm list: $(helm list)"
-  echo "Helm list filter: $(helm list --short --filter ${RELEASE_NAME})"
-  if [[ $(helm list --short --filter "${RELEASE_NAME}" ) != "" ]]; then
+  echo "Helm list: $(helm -n "${KUBE_NAMESPACE}" list)"
+  echo "Helm list filter: $(helm list -n "${KUBE_NAMESPACE}" --short --filter ${RELEASE_NAME})"
+  if [[ $(helm list -n "${KUBE_NAMESPACE}" --short --filter "${RELEASE_NAME}" ) != "" ]]; then
     echo "Deleting release ${RELEASE_NAME}"
     helm uninstall -n "${KUBE_NAMESPACE}" "${RELEASE_NAME}" --wait
 
