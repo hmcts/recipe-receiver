@@ -97,10 +97,10 @@ jobs:
         run: |
           ./scripts/docker.sh pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
-        env:
-          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
+#        env:
+#          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+#          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
+#          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
 
   deploy:
     strategy:
