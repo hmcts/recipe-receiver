@@ -65,10 +65,10 @@ jobs:
         run: |
           ./scripts/docker.sh pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
-        env:
-          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
+#        env:
+#          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+#          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
+#          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
 
       - name: Load CFT vars
         run: |
@@ -178,70 +178,3 @@ jobs:
           az logout
         shell: bash
         if: ${{ always() }}
-
-#  deployToCFT:
-#    runs-on: ubuntu-latest
-#    needs: buildAndPush
-#    steps:
-#      - uses: actions/checkout@main
-#
-#      - name: Set up Go
-#        uses: actions/setup-go@v3
-#        with:
-#          go-version: 1.18
-#
-#      - uses: azure/login@v1
-#        with:
-#          creds: ${{ secrets.AZURE_CREDENTIALS }}
-#
-#      # Create queue and fill it with messages
-#      - name: Create queue
-#        run: |
-#          ./scripts/create-queue.sh ${{ env.QUEUE_NAME }}
-#        shell: bash
-#        env:
-#          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
-#          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
-#          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
-#
-#      # Deploy to AKS
-#      - name: Deploy to AKS
-#        run: |
-#          ./scripts/k8s.sh deploy
-#        shell: bash
-#        env:
-#          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
-#          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
-#          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
-#          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
-#          KUBE_NAMESPACE: ${{ env.CFT_KUBE_NAMESPACE }}
-#          CLUSTER_SUB: ${{ env.CFT_CLUSTER_SUB }}
-#          CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
-#          CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
-#
-#      # Wait for message count to reach 0
-#      - name: Watch queue
-#        run: |
-#          ./scripts/watch-queue.sh ${{ env.QUEUE_NAME }}
-#        shell: bash
-#        env:
-#          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
-#          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
-#          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
-#
-#      # Container build and push to an Azure Container Registry (ACR)
-#      - name: Promote PR Image to Prod
-#        env:
-#          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
-#          REGISTRY_NAME: ${{ env.CFT_REGISTRY_NAME }}
-#          REGISTRY_SUB: ${{ env.CFT_REGISTRY_SUB }}
-#        run: |
-#          ./scripts/docker.sh prod
-#        shell: bash
-#        if: ${{ success() }}
-#
-#      - name: Az logout
-#        run: |
-#          az logout
-#        shell: bash
-#        if: ${{ always() }}

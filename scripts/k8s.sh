@@ -31,7 +31,7 @@ if [[ ${ACTION} == "deploy" ]]; then
 
 elif [[ ${ACTION} == "delete" ]]; then
 
-  if [[ $(helm list --short --filter recipe) != "" ]]; then
+  if [[ $(helm list --short --filter "${RELEASE_NAME}" ) != "" ]]; then
 
     helm uninstall -n "${KUBE_NAMESPACE}" "${RELEASE_NAME}" --wait
 
