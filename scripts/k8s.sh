@@ -33,7 +33,7 @@ if [[ ${ACTION} == "deploy" ]]; then
 elif [[ ${ACTION} == "delete" ]]; then
 
   if [[ $(helm list --short --filter "${RELEASE_NAME}" ) != "" ]]; then
-
+    echo "Deleting release ${RELEASE_NAME}"
     helm uninstall -n "${KUBE_NAMESPACE}" "${RELEASE_NAME}" --wait
 
   fi
