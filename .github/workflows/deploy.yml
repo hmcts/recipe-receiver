@@ -65,10 +65,6 @@ jobs:
         run: |
           ./scripts/docker.sh pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
-#        env:
-#          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
-#          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
-#          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
 
       - name: Load CFT vars
         run: |
@@ -97,10 +93,6 @@ jobs:
         run: |
           ./scripts/docker.sh pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
-#        env:
-#          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
-#          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
-#          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
 
   deploy:
     strategy:
@@ -132,42 +124,42 @@ jobs:
         run: |
           ./scripts/create-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
-        env:
-          SB_RESOURCE_GROUP: ${{ env.SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.SUBSCRIPTION }}
+#        env:
+#          SB_RESOURCE_GROUP: ${{ env.SB_RESOURCE_GROUP }}
+#          SERVICE_BUS: ${{ env.SERVICE_BUS }}
+#          SUBSCRIPTION: ${{ env.SUBSCRIPTION }}
 
       # Deploy to AKS
       - name: Deploy to AKS
         run: |
           ./scripts/k8s.sh deploy
         shell: bash
-        env:
-          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
-          SB_RESOURCE_GROUP: ${{ env.SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.SUBSCRIPTION }}
-          KUBE_NAMESPACE: ${{ env.KUBE_NAMESPACE }}
-          CLUSTER_SUB: ${{ env.CLUSTER_SUB }}
-          CLUSTER_RESOURCE_GROUP: ${{ env.CLUSTER_RESOURCE_GROUP }}
-          CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
+#        env:
+#          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+#          SB_RESOURCE_GROUP: ${{ env.SB_RESOURCE_GROUP }}
+#          SERVICE_BUS: ${{ env.SERVICE_BUS }}
+#          SUBSCRIPTION: ${{ env.SUBSCRIPTION }}
+#          KUBE_NAMESPACE: ${{ env.KUBE_NAMESPACE }}
+#          CLUSTER_SUB: ${{ env.CLUSTER_SUB }}
+#          CLUSTER_RESOURCE_GROUP: ${{ env.CLUSTER_RESOURCE_GROUP }}
+#          CLUSTER_NAME: ${{ env.CLUSTER_NAME }}
 
       # Wait for message count to reach 0
       - name: Watch queue
         run: |
           ./scripts/watch-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
-        env:
-          SB_RESOURCE_GROUP: ${{ env.SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.SUBSCRIPTION }}
+#        env:
+#          SB_RESOURCE_GROUP: ${{ env.SB_RESOURCE_GROUP }}
+#          SERVICE_BUS: ${{ env.SERVICE_BUS }}
+#          SUBSCRIPTION: ${{ env.SUBSCRIPTION }}
 
       # Container build and push to an Azure Container Registry (ACR)
       - name: Promote PR Image to Prod
-        env:
-          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
+#        env:
+#          ACR_REPO: ${{ env.REGISTRY_NAME }}.azurecr.io/${{ env.PRODUCT }}/${{ env.APP_NAME }}
+#          REGISTRY_NAME: ${{ env.REGISTRY_NAME }}
+#          REGISTRY_SUB: ${{ env.REGISTRY_SUB }}
         run: |
           ./scripts/docker.sh prod
         shell: bash

@@ -7,6 +7,7 @@ KUBECONFIG="${KUBECONFIG_PATH}"
 KUBE_FILES="${GITHUB_WORKSPACE}"/recipe-receiver/
 CHART_DIR="./charts/recipe-receiver"
 RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
+ACR_REPO=${REGISTRY_NAME}.azurecr.io/${PRODUCT}/${APP_NAME}
 
 ## Set context
 az aks get-credentials --subscription "${CLUSTER_SUB}" \
