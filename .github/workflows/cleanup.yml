@@ -1,9 +1,8 @@
 name: Cleanup Resources
-on: pull_request
-#on:
-#  pull_request:
-#    types:
-#      - closed
+on:
+  pull_request:
+    types:
+      - closed
 env:
   # Common vars
   QUEUE_NAME: recipes-pr${{ github.event.number }}
