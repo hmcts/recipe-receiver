@@ -17,7 +17,7 @@ until [[ "${CURRENT_QUEUE_SIZE}" == "0" ]]; do
   echo "Current queue size: ${CURRENT_QUEUE_SIZE}"
 
   if [[ $(date +'%l%M%S') > ${wait_until} ]]; then
-    echo "Queue isn't empty after ${QUEUE_TIMEOUT_MINS}, quitting..."
+    echo "Queue isn't empty after ${QUEUE_TIMEOUT_MINS} minutes, quitting..."
     exit 1
   else
     sleep 5
