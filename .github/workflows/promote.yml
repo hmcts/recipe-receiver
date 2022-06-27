@@ -1,4 +1,4 @@
-name: Deploy Keda test app
+name: Promote Keda test app
 
 on:
   pull_request:
@@ -20,7 +20,7 @@ jobs:
         project: ["sds", "cft"]
     runs-on: ubuntu-latest
     steps:
-#      - uses: actions/checkout@main
+      - uses: actions/checkout@main
 
       # Load Project environment variables
       - name: Load ${{ matrix.project }} vars
