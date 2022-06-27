@@ -32,7 +32,7 @@ jobs:
         run: |
           env
         shell: bash
-        
+
 #       # Load Project environment variables
 #       - name: Load ${{ matrix.project }} vars
 #         run: |
