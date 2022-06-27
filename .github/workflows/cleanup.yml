@@ -10,6 +10,15 @@ env:
   GITHUB_EVENT_NUMBER: ${{ github.event.number }}
 
 jobs:
+  printPayload:    
+    name: Print payload
+    runs-on: ubuntu-latest
+    steps:
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJson(github) }}
+      run: |
+        echo "$GITHUB_CONTEXT"
   cleanup:
     strategy:
       matrix:
