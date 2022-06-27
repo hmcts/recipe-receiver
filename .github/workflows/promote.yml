@@ -1,4 +1,4 @@
-name: Deploy Keda test app
+name: Promote Keda test app
 
 on:
   pull_request:
@@ -8,8 +8,6 @@ env:
   # Common vars
   GITHUB_EVENT_NUMBER: ${{ github.event.number }}
   APP_NAME: recipe-receiver
-  QUEUE_NAME: recipes-pr${{ github.event.number }}
-  HELM_VERSION: v3.9.0
   VAR_FILE_PATH: ${{ github.workspace }}/.github/workflows
 
 jobs:
@@ -20,7 +18,7 @@ jobs:
         project: ["sds", "cft"]
     runs-on: ubuntu-latest
     steps:
-#      - uses: actions/checkout@main
+      - uses: actions/checkout@main
 
       # Load Project environment variables
       - name: Load ${{ matrix.project }} vars
