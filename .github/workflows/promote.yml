@@ -1,32 +1,28 @@
-name: Cleanup Resources
+name: Deploy Keda test app
+
 on:
   pull_request:
     types:
       - closed
 env:
   # Common vars
-  QUEUE_NAME: recipes-pr${{ github.event.number }}
-  APP_NAME: recipe-receiver
   GITHUB_EVENT_NUMBER: ${{ github.event.number }}
+  APP_NAME: recipe-receiver
+  QUEUE_NAME: recipes-pr${{ github.event.number }}
+  HELM_VERSION: v3.9.0
+  VAR_FILE_PATH: ${{ github.workspace }}/.github/workflows
 
 jobs:
-  printPayload:    
-    name: Print payload
-    runs-on: ubuntu-latest
-    steps:
-    - name: Dump GitHub context
-      env:
-        GITHUB_CONTEXT: ${{ toJson(github) }}
-      run: |
-        echo "$GITHUB_CONTEXT"
-  cleanup:
+  promote:
+    if: github.event.pull_request.merged == true
     strategy:
       matrix:
         project: ["sds", "cft"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@main
+#      - uses: actions/checkout@main
 
+      # Load Project environment variables
       - name: Load ${{ matrix.project }} vars
         run: |
           cat ${VAR_FILE} >> $GITHUB_ENV
@@ -38,13 +34,15 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Clean up PR resources
-      - name: Delete AKS resources
+      # Container build and push to an Azure Container Registry (ACR)
+      - name: Promote PR Image to Prod
         run: |
-          ./scripts/k8s.sh delete
+          ./scripts/docker.sh prod
         shell: bash
+        if: ${{ success() }}
 
-      - name: Delete PR queue
+      - name: Az logout
         run: |
-          ./scripts/cleanup-infra.sh ${{ env.QUEUE_NAME }}
+          az logout
         shell: bash
+        if: ${{ always() }}

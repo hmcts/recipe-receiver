@@ -138,13 +138,6 @@ jobs:
           ./scripts/watch-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
 
-      # Container build and push to an Azure Container Registry (ACR)
-      - name: Promote PR Image to Prod
-        run: |
-          ./scripts/docker.sh prod
-        shell: bash
-        if: ${{ success() }}
-
       - name: Az logout
         run: |
           az logout
