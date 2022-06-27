@@ -4,6 +4,8 @@ set -e
 # PR / prod
 BUILD=$1
 
+ACR_REPO=${REGISTRY_NAME}.azurecr.io/${PRODUCT}/${APP_NAME}
+
 if [[ ${BUILD} =~ ^pr-.* ]]; then
   docker build . -t "${ACR_REPO}:${BUILD}"
   docker push "${ACR_REPO}:${BUILD}"

@@ -1,5 +1,5 @@
 # sds-recipe-receiver
-Demo app that reads messages from an Azure Service Bus queue and logs the messages to stdout.
+Demo app that reads messages from an Azure Service Bus queue and logs the messages it receives.
 
 ## Prerequisites 
 
@@ -29,20 +29,29 @@ To allow the workflow to do all of this we need:
 * `Contributor` role on the `ss-dev-01-rg` & `ss-dev-01-rg` resource groups
 * `AcrPush` role on the `sdshmctspublic` repo
 
-## Workflow steps
+## Workflows
+
+### Summary of steps
 PR Open:
 * Builds the Recipe Receiver app
-* Publishes the container image to the `sdshmctspublic` container registry
-* Creates a new queue on the Toffee Staging Service Bus when a PR is opened
-* Loads the newly created queue with messages
-* Deploys the Keda resources to the SDS DEV AKS cluster
-* Watches the queue until the message count hits 0
+* Publishes the container image to the `sdshmctspublic` & `hmctspublic` container registries
+* Creates new queues on each Service Bus to test the PR
+* Loads the newly created queues with messages
+* Deploys the Keda resources to the SDS DEV & CFT Preview AKS clusters
+* Watches the queues until the message count hits 0
 
 PR Close:
-* Deletes the Keda resources from the SDS DEV AKS cluster
-* Removes the lock on the toffee-shared-infrastructure-stg resource group
-* Deletes the PR queue
-* Recreates the lock on the toffee-shared-infrastructure-stg resource group
+* Deletes the created Keda resources from the clusters
+* Removes the locks on the resource groups that the Service Buses live in
+* Deletes the PR queues
+* Recreates the locks
+
+### Updating the workflows
+#### Deployment strategy
+To reduce the amount of code and the complexity around making sure that both the SDS and CFT deployments are as similar as possible, a matrix strategy is used. This means that unless conditions are put in (which we would like to avoid), any changes made in the workflows and the scripts that they use will have an effect both the SDS and CFT deployment. 
+
+#### Environment variables
+SDS and CFT environment variables are loaded from sds.env and cft.env respectively. These files contain the project specific environment variables that are needed for the workflows to run properly and should be the place for any further project specific variables that may be needed in the future. Common environment variables that can be used across both projects can be declared in the workflow files.
 
 ## Loading a queue with messages
 
@@ -51,10 +60,11 @@ The script to load messages into a queue is located in the messageGenerator dire
 The script takes 3 arguments, the hostname of the service bus, the name of the queue and the number of messages to load the queue with.
 
 ### Examples
-Using the binary to load 500 messages into the recipes-pr10 queue:
+Using the binary to load 500 messages into the recipes-pr10 queue (only works if the queue exists, meaning the PR has to still be open):
 
 `./messageGenerator/recipe-sender -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes-pr10 -messages 500`
 
 Using `go run` to run the script to load 2000 messages into the recipes queue:
 
 `go run messageGenerator/main.go -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes -messages 2000`
+
