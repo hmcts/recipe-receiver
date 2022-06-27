@@ -1,8 +1,0 @@
-function:
-  triggers:
-    - type: azure-servicebus
-      namespace: toffee-servicebus-sbox
-      queueName: recipes
-      queueLength: "5"
-  environment:
-    FULLY_QUALIFIED_NAMESPACE: "toffee-servicebus-sbox.servicebus.windows.net"

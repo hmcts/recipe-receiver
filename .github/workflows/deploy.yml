@@ -8,31 +8,7 @@ env:
   APP_NAME: recipe-receiver
   QUEUE_NAME: recipes-pr${{ github.event.number }}
   HELM_VERSION: v3.9.0
-
-  # SDS vars
-  SDS_SUBSCRIPTION: 74dacd4f-a248-45bb-a2f0-af700dc4cf68
-  SDS_PRODUCT: toffee
-  SDS_REGISTRY_NAME: sdshmctspublic
-  SDS_REGISTRY_SUB: 5ca62022-6aa2-4cee-aaa7-e7536c8d566c
-  SDS_CLUSTER_SUB: 867a878b-cb68-4de5-9741-361ac9e178b6
-  SDS_CLUSTER_NAME: ss-dev-01-aks
-  SDS_CLUSTER_RESOURCE_GROUP: ss-dev-01-rg
-  SDS_KUBE_NAMESPACE: toffee
-  SDS_SERVICE_BUS: toffee-servicebus-stg
-  SDS_SB_RESOURCE_GROUP: toffee-shared-infrastructure-stg
-  SDS_LOCK_NAME: stg-lock
-
-  # CFT vars
-  CFT_SUBSCRIPTION: 1c4f0704-a29e-403d-b719-b90c34ef14c9
-  CFT_PRODUCT: plum
-  CFT_REGISTRY_NAME: hmctspublic
-  CFT_REGISTRY_SUB: 8999dec3-0104-4a27-94ee-6588559729d1
-  CFT_CLUSTER_SUB: 8b6ea922-0862-443e-af15-6056e1c9b9a4
-  CFT_CLUSTER_NAME: cft-preview-01-aks
-  CFT_CLUSTER_RESOURCE_GROUP: cft-preview-01-rg
-  CFT_KUBE_NAMESPACE: cnp
-  CFT_SERVICE_BUS: plum-servicebus-aat
-  CFT_SB_RESOURCE_GROUP: plum-shared-infrastructure-aat
+  VAR_FILE_PATH: ${{ github.workspace }}/.github/workflows
 
 jobs:
   buildAndPush:
@@ -62,22 +38,25 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
+      - name: Load SDS vars
+        run: |
+          cat ${VAR_FILE} >> $GITHUB_ENV
+        shell: bash
+        env:
+          VAR_FILE: ${{ env.VAR_FILE_PATH }}/sds.env
+
       - name: Get ACR Token
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription ${{ env.SDS_CLUSTER_SUB }}
-            sds_token=$(az acr login -n ${{ env.SDS_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
+            az account set --subscription ${{ env.CLUSTER_SUB }}
+            sds_token=$(az acr login -n ${{ env.REGISTRY_NAME }} --expose-token | jq -r .accessToken)
             echo "SDS_ACR_TOKEN=${sds_token}" >> $GITHUB_ENV
-
-            az account set --subscription ${{ env.CFT_CLUSTER_SUB }}
-            cft_token=$(az acr login -n ${{ env.CFT_REGISTRY_NAME }} --expose-token | jq -r .accessToken)
-            echo "CFT_ACR_TOKEN=${cft_token}" >> $GITHUB_ENV
 
       # Connect to Azure Container Registry (ACR)
       - uses: azure/docker-login@v1
         with:
-          login-server: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io
+          login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
           username: 00000000-0000-0000-0000-000000000000
           password: ${{ env.SDS_ACR_TOKEN }}
 
@@ -86,15 +65,26 @@ jobs:
         run: |
           ./scripts/docker.sh pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
+
+      - name: Load CFT vars
+        run: |
+          cat ${VAR_FILE} >> $GITHUB_ENV
+        shell: bash
         env:
-          ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.SDS_PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.SDS_REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.SDS_REGISTRY_SUB }}
+          VAR_FILE: ${{ env.VAR_FILE_PATH }}/cft.env
+
+      - name: Get ACR Token CFT
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az account set --subscription ${{ env.CLUSTER_SUB }}
+            cft_token=$(az acr login -n ${{ env.REGISTRY_NAME }} --expose-token | jq -r .accessToken)
+            echo "CFT_ACR_TOKEN=${cft_token}" >> $GITHUB_ENV
 
       # Connect to Azure Container Registry (ACR)
       - uses: azure/docker-login@v1
         with:
-          login-server: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io
+          login-server: ${{ env.REGISTRY_NAME }}.azurecr.io
           username: 00000000-0000-0000-0000-000000000000
           password: ${{ env.CFT_ACR_TOKEN }}
 
@@ -103,12 +93,11 @@ jobs:
         run: |
           ./scripts/docker.sh pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
-        env:
-          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.CFT_REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.CFT_REGISTRY_SUB }}
 
-  deployToSDS:
+  deploy:
+    strategy:
+      matrix:
+        project: ["sds", "cft"]
     runs-on: ubuntu-latest
     needs: buildAndPush
     steps:
@@ -119,72 +108,13 @@ jobs:
         with:
           go-version: 1.18
 
-      - uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
-
-      # Create queue and fill it with messages
-      - name: Create queue
+      # Load Project environment variables
+      - name: Load ${{ matrix.project }} vars
         run: |
-          ./scripts/create-queue.sh ${{ env.QUEUE_NAME }}
+          cat ${VAR_FILE} >> $GITHUB_ENV
         shell: bash
         env:
-          SB_RESOURCE_GROUP: ${{ env.SDS_SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.SDS_SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.SDS_SUBSCRIPTION }}
-
-      # Deploy to AKS
-      - name: Deploy to AKS
-        run: |
-          ./scripts/k8s.sh deploy
-        shell: bash
-        env:
-          ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.SDS_PRODUCT }}/${{ env.APP_NAME }}
-          SB_RESOURCE_GROUP: ${{ env.SDS_SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.SDS_SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.SDS_SUBSCRIPTION }}
-          KUBE_NAMESPACE: ${{ env.SDS_KUBE_NAMESPACE }}
-          CLUSTER_SUB: ${{ env.SDS_CLUSTER_SUB }}
-          CLUSTER_RESOURCE_GROUP: ${{ env.SDS_CLUSTER_RESOURCE_GROUP }}
-          CLUSTER_NAME: ${{ env.SDS_CLUSTER_NAME }}
-
-      # Wait for message count to reach 0
-      - name: Watch queue
-        run: |
-          ./scripts/watch-queue.sh ${{ env.QUEUE_NAME }}
-        shell: bash
-        env:
-          SB_RESOURCE_GROUP: ${{ env.SDS_SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.SDS_SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.SDS_SUBSCRIPTION }}
-
-      # Container build and push to an Azure Container Registry (ACR)
-      - name: Promote PR Image to Prod
-        env:
-          ACR_REPO: ${{ env.SDS_REGISTRY_NAME }}.azurecr.io/${{ env.SDS_PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.SDS_REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.SDS_REGISTRY_SUB }}
-        run: |
-          ./scripts/docker.sh prod
-        shell: bash
-        if: ${{ success() }}
-
-      - name: Az logout
-        run: |
-          az logout
-        shell: bash
-        if: ${{ always() }}
-
-  deployToCFT:
-    runs-on: ubuntu-latest
-    needs: buildAndPush
-    steps:
-      - uses: actions/checkout@main
-
-      - name: Set up Go
-        uses: actions/setup-go@v3
-        with:
-          go-version: 1.18
+          VAR_FILE: ${{ github.workspace }}/.github/workflows/${{ matrix.project }}.env
 
       - uses: azure/login@v1
         with:
@@ -195,35 +125,18 @@ jobs:
         run: |
           ./scripts/create-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
-        env:
-          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
 
       # Deploy to AKS
       - name: Deploy to AKS
         run: |
           ./scripts/k8s.sh deploy
         shell: bash
-        env:
-          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
-          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
-          KUBE_NAMESPACE: ${{ env.CFT_KUBE_NAMESPACE }}
-          CLUSTER_SUB: ${{ env.CFT_CLUSTER_SUB }}
-          CLUSTER_RESOURCE_GROUP: ${{ env.CFT_CLUSTER_RESOURCE_GROUP }}
-          CLUSTER_NAME: ${{ env.CFT_CLUSTER_NAME }}
 
       # Wait for message count to reach 0
       - name: Watch queue
         run: |
           ./scripts/watch-queue.sh ${{ env.QUEUE_NAME }}
         shell: bash
-        env:
-          SB_RESOURCE_GROUP: ${{ env.CFT_SB_RESOURCE_GROUP }}
-          SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
-          SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
 
       - name: Az logout
         run: |
