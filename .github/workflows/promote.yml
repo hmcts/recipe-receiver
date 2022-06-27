@@ -19,7 +19,6 @@ jobs:
       matrix:
         project: ["sds", "cft"]
     runs-on: ubuntu-latest
-    needs: buildAndPush
     steps:
       - uses: actions/checkout@main
 
