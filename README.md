@@ -6,8 +6,6 @@ Demo app that reads messages from an Azure Service Bus queue and logs the messag
 ### Repository secrets
 There 3 secrets that are needed for workflows so they can function properly they are:
 * AZURE_CREDENTIALS - the output from following [these instructions](https://github.com/marketplace/actions/azure-login#configure-deployment-credentials).
-* REGISTRY_USERNAME - username for sdshmctspublic container registry.
-* REGISTRY_PASSWORD - password for sdshmctspublic container registry.
 
 ### Permissions 
 For this repository to be fully function we need to have the correct permissions in place for Keda, the GitHub workflows and the recipe receiver application.
