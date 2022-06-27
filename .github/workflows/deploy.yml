@@ -225,17 +225,6 @@ jobs:
           SERVICE_BUS: ${{ env.CFT_SERVICE_BUS }}
           SUBSCRIPTION: ${{ env.CFT_SUBSCRIPTION }}
 
-      # Container build and push to an Azure Container Registry (ACR)
-      - name: Promote PR Image to Prod
-        env:
-          ACR_REPO: ${{ env.CFT_REGISTRY_NAME }}.azurecr.io/${{ env.CFT_PRODUCT }}/${{ env.APP_NAME }}
-          REGISTRY_NAME: ${{ env.CFT_REGISTRY_NAME }}
-          REGISTRY_SUB: ${{ env.CFT_REGISTRY_SUB }}
-        run: |
-          ./scripts/docker.sh prod
-        shell: bash
-        if: ${{ success() }}
-
       - name: Az logout
         run: |
           az logout
