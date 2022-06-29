@@ -20,7 +20,7 @@ get_creds() {
 }
 
 # Try getting Cluster 00 creds first then 01. Fail if problems with both
-if get_creds 00 || get_creds 01 || (cat "${AKS_LOG_FILE}" && exit 1)
+get_creds 00 || get_creds 01 || (cat "${AKS_LOG_FILE}" && exit 1)
 
 if [[ ${ACTION} == "deploy" ]]; then
 
