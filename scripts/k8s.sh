@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 ACTION=$1
 
@@ -27,6 +26,8 @@ if ! get_creds 00; then
     cat "${AKS_LOG_FILE}"
   fi
 fi
+
+set -e
 
 if [[ ${ACTION} == "deploy" ]]; then
 
