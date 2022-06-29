@@ -18,13 +18,8 @@ get_creds() {
 }
 
 # Try getting Cluster 00 creds first then 01. Fail if problems with both
-#get_creds 00 || get_creds 01 || (cat "${AKS_LOG_FILE}" && exit 1)
-if ! get_creds 00; then
-  if ! get_creds 01; then
-    echo "Failed to authenticate after trying both clusters. Errors below."
-    cat "${AKS_LOG_FILE}"
-  fi
-fi
+get_creds 00 || get_creds 01 || ( echo "Failed to authenticate after trying both clusters. Errors below." && exit 1)
+
 
 set -e
 
