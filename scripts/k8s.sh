@@ -15,7 +15,6 @@ get_creds() {
                          --resource-group "${AKS_PROJECT}-${AKS_ENV}-${1}-rg" \
                          --name "${AKS_PROJECT}-${AKS_ENV}-${1}-aks" \
                          --admin
-                         2> "${AKS_LOG_FILE}"
 }
 
 # Try getting Cluster 00 creds first then 01. Fail if problems with both
