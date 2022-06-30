@@ -35,10 +35,10 @@ jobs:
       # Clean up PR resources
       - name: Delete AKS resources
         run: |
-          ./scripts/k8s.sh delete ${ env.APP_NAME }-pr-${ env.GITHUB_EVENT_NUMBER }
+          ./scripts/k8s.sh delete ${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
 
       - name: Delete PR queue
         run: |
-          ./scripts/cleanup-infra.sh "${ env.GITHUB_EVENT_NUMBER }"
+          ./scripts/cleanup-infra.sh ${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
