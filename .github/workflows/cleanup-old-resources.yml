@@ -26,13 +26,8 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      # Clean up PR resources
-      - name: Delete AKS resources
+      # Clean up old PR resources
+      - name: Clean up old resources
         run: |
-          ./scripts/k8s.sh delete
-        shell: bash
-
-      - name: Delete PR queue
-        run: |
-          ./scripts/cleanup-infra.sh ${{ env.QUEUE_NAME }}
+          ./scripts/cleanup-old-resources.sh
         shell: bash
