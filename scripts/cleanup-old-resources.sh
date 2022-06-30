@@ -11,4 +11,4 @@ for i in ${CLOSED_PRS}; do
 done
 
 echo "./cleanup-infra.sh ${CLOSED_PRS}"
-./cleanup-infra.sh "${CLOSED_PRS}"
+./cleanup-infra.sh ${CLOSED_PRS}
