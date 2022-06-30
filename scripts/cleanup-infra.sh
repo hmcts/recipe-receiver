@@ -23,7 +23,7 @@ if get_lock; then
   done
 fi
 
-echo "Lock deleted"
+echo "Lock removed"
 
 for i in ${QUEUES}; do
   QUEUE="recipes-pr${i}"
@@ -44,7 +44,7 @@ for i in ${QUEUES}; do
 
     count=3
     until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
-      if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
+      if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}" 2> /dev/null) ]]; then
         echo "${QUEUE} queue has been deleted"
         deleted="true"
 
