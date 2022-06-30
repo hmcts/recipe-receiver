@@ -15,10 +15,11 @@ if get_lock; then
     echo "Removing lock"
     az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
 
+    sleep 10
+
     if ! get_lock; then
       break
     fi
-    sleep 10
   done
 fi
 
@@ -51,7 +52,7 @@ for i in ${QUEUES}; do
 
       elif [[ ${count} == 1 ]]; then
         echo "Problem deleting queue: ${QUEUE}"
-        exit 1
+#        exit 1
       else
         (( count-=1 ))
         sleep 5
