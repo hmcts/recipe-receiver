@@ -1,7 +1,5 @@
 name: Cleanup PR resources
-on:
-  - workflow_dispatch
-  - pull_request
+on: pull_request
 #  pull_request:
 #    types:
 #      - closed
