@@ -10,10 +10,11 @@ get_lock() {
 delete_lock() {
   az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
 }
-
+delete_lock
+sleep 60
 until get_lock; do
   delete_lock
-  sleep 20
+  sleep 60
 done
 
 echo "Lock deleted"
