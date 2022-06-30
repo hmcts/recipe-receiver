@@ -28,7 +28,7 @@ for i in ${QUEUES}; do
   QUEUE="recipes-pr${i}"
 
   # Delete queue
-  count=3
+
   if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}" 2> /dev/null ) ]]; then
     # Not found, do nothing
     continue
@@ -43,7 +43,7 @@ for i in ${QUEUES}; do
         --name "${QUEUE}"
     fi
 
-
+    count=3
     until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
       if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}" 2> /dev/null) ]]; then
         deleted="true"
