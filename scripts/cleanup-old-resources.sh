@@ -5,6 +5,8 @@ SCRIPT_DIR=$(dirname "${0}")
 
 cd "${SCRIPT_DIR}"
 
+echo $CLOSED_PRS
+
 delete_release() {
   ./k8s.sh delete $1
 }
