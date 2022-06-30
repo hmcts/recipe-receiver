@@ -2,7 +2,9 @@
 set -e
 
 # Remove lock on resource group
+echo "Removing lock"
 az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
+sleep 5
 
 # Delete PR queue
 az servicebus queue delete \
@@ -27,6 +29,6 @@ until [[ $deleted == "true" ]] || [[ $count == 0 ]]; do
 done
 
 # Recreate lock on resource group
-echo "Recreate lock"
+echo "Recreating lock"
 az group lock create --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}" --lock-type CanNotDelete
 
