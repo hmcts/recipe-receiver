@@ -15,14 +15,15 @@ if get_lock; then
     echo "Removing lock"
     az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
 
+    sleep 10
+
     if ! get_lock; then
       break
     fi
-    sleep 10
   done
 fi
 
-echo "Lock deleted"
+echo "Lock removed"
 
 for i in ${QUEUES}; do
   QUEUE="recipes-pr${i}"
@@ -35,27 +36,24 @@ for i in ${QUEUES}; do
   else
    echo "Working on deleting ${QUEUE}"
     # Delete if queue exists
-    if [[ ${count} == 3 ]]; then
-      az servicebus queue delete \
-        --namespace-name "${SERVICE_BUS}" \
-        --resource-group "${SB_RESOURCE_GROUP}" \
-        --subscription "${SUBSCRIPTION}" \
-        --name "${QUEUE}"
-    fi
+    az servicebus queue delete \
+      --namespace-name "${SERVICE_BUS}" \
+      --resource-group "${SB_RESOURCE_GROUP}" \
+      --subscription "${SUBSCRIPTION}" \
+      --name "${QUEUE}"
 
     count=3
     until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
-      if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
-        deleted="true"
+      if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}" 2> /dev/null) ]]; then
         echo "${QUEUE} queue has been deleted"
+        deleted="true"
 
       elif [[ ${count} == 1 ]]; then
         echo "Problem deleting queue: ${QUEUE}"
-        exit 1
-      else
-        (( count-=1 ))
-        sleep 5
+        break
       fi
+      (( count-=1 ))
+      sleep 5
 
     done
   fi

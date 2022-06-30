@@ -1,8 +1,8 @@
 name: Cleanup PR resources
-on:
-  pull_request:
-    types:
-      - closed
+on: pull_request
+#  pull_request:
+#    types:
+#      - closed
 
 env:
   # Common vars
