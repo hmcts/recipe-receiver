@@ -1,7 +1,8 @@
 name: Cleanup old Resources
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '* 6 * * 1'
+      - cron: '* 6 * * 1'
 env:
   # Common vars
   APP_NAME: recipe-receiver
