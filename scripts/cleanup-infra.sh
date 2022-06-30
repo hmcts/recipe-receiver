@@ -29,7 +29,7 @@ for pr in "${@}"; do
   count=3
   until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
 
-    if [[ ${count} == 3 ]] && [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}" 2> /dev/null) ]]; then
+    if [[ ${count} == 3 ]] && [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
       # Not found, do nothing
       deleted=true
       continue
