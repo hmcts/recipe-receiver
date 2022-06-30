@@ -22,17 +22,18 @@ fi
 
 echo "Lock deleted"
 
-for pr in ${@}; do
+for pr in "${@}"; do
   QUEUE="recipes-pr${pr}"
+
+  echo "Working on ${QUEUE}"
 
   # Delete queue
   count=3
   until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
 
-
     if [[ ${count} == 3 ]] && [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
       # Not found, do nothing
-      continue
+      break
     fi
 
     # Delete if queue exists
