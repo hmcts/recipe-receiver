@@ -14,8 +14,10 @@ env:
 jobs:
   cleanup:
     strategy:
+      fail-fast: false
       matrix:
         project: ["sds", "cft"]
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@main
