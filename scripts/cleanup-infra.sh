@@ -45,8 +45,8 @@ for i in ${QUEUES}; do
     count=3
     until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
       if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
-        deleted="true"
         echo "${QUEUE} queue has been deleted"
+        deleted="true"
 
       elif [[ ${count} == 1 ]]; then
         echo "Problem deleting queue: ${QUEUE}"
