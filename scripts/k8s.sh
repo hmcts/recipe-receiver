@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 ACTION=$1
 
@@ -8,12 +7,21 @@ KUBE_FILES="${GITHUB_WORKSPACE}"/recipe-receiver/
 CHART_DIR="./charts/recipe-receiver"
 RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
 ACR_REPO=${REGISTRY_NAME}.azurecr.io/${PRODUCT}/${APP_NAME}
+AKS_LOG_FILE="./aks-auth-logs"
 
 ## Set context
-az aks get-credentials --subscription "${CLUSTER_SUB}" \
-                       --resource-group "${CLUSTER_RESOURCE_GROUP}" \
-                       --name "${CLUSTER_NAME}" \
-                       --admin
+get_creds() {
+  az aks get-credentials --subscription "${CLUSTER_SUB}" \
+                         --resource-group "${AKS_PROJECT}-${AKS_ENV}-${1}-rg" \
+                         --name "${AKS_PROJECT}-${AKS_ENV}-${1}-aks" \
+                         --admin
+}
+
+# Try getting Cluster 00 creds first then 01. Fail if problems with both
+get_creds 00 2> "${AKS_LOG_FILE}" || get_creds 01 2> "${AKS_LOG_FILE}" || ( echo "Failed to authenticate after trying both clusters. Errors below." && cat "${AKS_LOG_FILE}"&& exit 1)
+
+
+set -e
 
 if [[ ${ACTION} == "deploy" ]]; then
 
