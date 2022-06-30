@@ -1,10 +1,11 @@
 name: Cleanup old Resources
-on: pull_request
+on:
+  push:
+    branches:
+      - master
 env:
   # Common vars
-#  QUEUE_NAME: recipes-pr${{ github.event.number }}
   APP_NAME: recipe-receiver
-#  GITHUB_EVENT_NUMBER: ${{ github.event.number }}
 
 jobs:
   cleanup:

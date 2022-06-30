@@ -1,4 +1,4 @@
-name: Cleanup Resources
+name: Cleanup PR resources
 on:
   pull_request:
     types:
