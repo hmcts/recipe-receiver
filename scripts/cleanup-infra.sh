@@ -27,14 +27,14 @@ az servicebus queue delete \
   --namespace-name "${SERVICE_BUS}" \
   --resource-group "${SB_RESOURCE_GROUP}" \
   --subscription "${SUBSCRIPTION}" \
-  --name "${QUEUE_NAME}"
+  --name "${1}"
 
 # Make sure queue has been deleted
 count=3
 until [[ $deleted == "true" ]] || [[ $count == 0 ]]; do
-  if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE_NAME}") ]]; then
+  if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${1}") ]]; then
     deleted="true"
-    echo "${QUEUE_NAME} queue has been deleted"
+    echo "${1} queue has been deleted"
   elif [[ $count == 1 ]]; then
     echo "Problem deleting queue"
     exit 1
