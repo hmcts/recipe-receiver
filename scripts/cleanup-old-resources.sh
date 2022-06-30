@@ -12,11 +12,11 @@ delete_release() {
 }
 
 queue() {
-    ./cleanup-infra.sh "${1}"
+     "${1}"
 }
 
 for i in ${CLOSED_PRS}; do
-  delete_release "recipe-receiver-pr-${i}"
-  queue "recipes-pr${1}"
+  ./k8s.sh delete "recipe-receiver-pr-${i}"
 done
 
+queue ./cleanup-infra.sh "${CLOSED_PRS}"
