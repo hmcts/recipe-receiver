@@ -13,7 +13,7 @@ delete_lock() {
 
 until get_lock; do
   delete_lock
-  sleep 5
+  sleep 20
 done
 
 echo "Lock deleted"
