@@ -1,4 +1,4 @@
-name: Cleanup Resources
+name: Cleanup old Resources
 on: pull_request
 env:
   # Common vars
