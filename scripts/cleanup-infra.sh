@@ -32,7 +32,7 @@ for pr in "${@}"; do
     if [[ ${count} == 3 ]] && [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
       # Not found, do nothing
       deleted=true
-      continue
+      continue 2
     fi
 
    echo "Working on deleting ${QUEUE}"

@@ -6,7 +6,7 @@ SCRIPT_DIR=$(dirname "${0}")
 cd "${SCRIPT_DIR}"
 
 echo "Delete Helm releases"
-./k8s.sh delete
+./k8s.sh delete ${CLOSED_PRS}
 
 echo "Delete Queues"
 ./cleanup-infra.sh ${CLOSED_PRS}
