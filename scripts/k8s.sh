@@ -24,7 +24,7 @@ get_creds 00 2> "${AKS_LOG_FILE}" || get_creds 01 2> "${AKS_LOG_FILE}" || ( echo
 set -e
 
 for release in ${RELEASES}; do
-  RELEASE_NAME="${{ env.APP_NAME }}-pr-${release}"
+  RELEASE_NAME="${APP_NAME}-pr-${release}"
 
   if [[ ${ACTION} == "deploy" ]]; then
 
