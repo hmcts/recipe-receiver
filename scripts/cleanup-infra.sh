@@ -25,10 +25,6 @@ fi
 echo "Lock deleted"
 
 for i in ${QUEUES}; do
-  echo $i
-done
-
-for i in ${QUEUES}; do
   QUEUE="recipes-pr${i}"
 
   # Delete queue
@@ -50,7 +46,7 @@ for i in ${QUEUES}; do
         --name "${QUEUE}"
     fi
 
-    if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}" 2> /dev/null) ]]; then
+    if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
       deleted="true"
       echo "${QUEUE} queue has been deleted"
 
