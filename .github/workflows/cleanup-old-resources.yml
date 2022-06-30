@@ -1,0 +1,38 @@
+name: Cleanup Resources
+on: pull_request
+env:
+  # Common vars
+  QUEUE_NAME: recipes-pr${{ github.event.number }}
+  APP_NAME: recipe-receiver
+  GITHUB_EVENT_NUMBER: ${{ github.event.number }}
+
+jobs:
+  cleanup:
+    strategy:
+      matrix:
+        project: ["sds", "cft"]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Load ${{ matrix.project }} vars
+        run: |
+          cat ${VAR_FILE} >> $GITHUB_ENV
+        shell: bash
+        env:
+          VAR_FILE: ${{ github.workspace }}/.github/workflows/${{ matrix.project }}.env
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Clean up PR resources
+      - name: Delete AKS resources
+        run: |
+          ./scripts/k8s.sh delete
+        shell: bash
+
+      - name: Delete PR queue
+        run: |
+          ./scripts/cleanup-infra.sh ${{ env.QUEUE_NAME }}
+        shell: bash
