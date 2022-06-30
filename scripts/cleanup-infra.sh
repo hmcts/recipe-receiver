@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+QUEUES=$@
+
 get_lock() {
    az group lock list --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --query '[].name' -o tsv | grep "${LOCK_NAME}"
 }
@@ -22,7 +24,8 @@ fi
 
 echo "Lock deleted"
 
-for pr in ${@}; do
+
+for pr in ${QUEUES}; do
   QUEUE="recipes-pr${pr}"
 
   # Delete queue
