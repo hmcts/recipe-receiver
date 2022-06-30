@@ -22,7 +22,7 @@ fi
 
 echo "Lock deleted"
 
-for pr in "${@}"; do
+for pr in ${@}; do
   QUEUE="recipes-pr${pr}"
 
   # Delete queue
