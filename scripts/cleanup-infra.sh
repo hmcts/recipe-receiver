@@ -36,13 +36,11 @@ for i in ${QUEUES}; do
   else
    echo "Working on deleting ${QUEUE}"
     # Delete if queue exists
-    if [[ ${count} == 3 ]]; then
-      az servicebus queue delete \
-        --namespace-name "${SERVICE_BUS}" \
-        --resource-group "${SB_RESOURCE_GROUP}" \
-        --subscription "${SUBSCRIPTION}" \
-        --name "${QUEUE}"
-    fi
+    az servicebus queue delete \
+      --namespace-name "${SERVICE_BUS}" \
+      --resource-group "${SB_RESOURCE_GROUP}" \
+      --subscription "${SUBSCRIPTION}" \
+      --name "${QUEUE}"
 
     count=3
     until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
