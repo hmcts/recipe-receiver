@@ -40,5 +40,5 @@ jobs:
 
       - name: Delete PR queue
         run: |
-          ./scripts/cleanup-infra.sh ${{ env.QUEUE_NAME }}
+          ./scripts/cleanup-infra.sh "${ env.GITHUB_EVENT_NUMBER }"
         shell: bash
