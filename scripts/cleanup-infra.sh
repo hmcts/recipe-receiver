@@ -3,8 +3,20 @@ set -e
 
 # Remove lock on resource group
 echo "Removing lock"
-az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
-sleep 5
+get_lock() {
+   az group lock list --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --query '[].name' -o tsv | grep "${LOCK_NAME}"
+}
+
+delete_lock() {
+  az group lock delete --subscription "${SUBSCRIPTION}" --resource-group "${SB_RESOURCE_GROUP}" --name "${LOCK_NAME}"
+}
+
+until get_lock; do
+  delete_lock
+  sleep 5
+done
+
+echo "Lock deleted"
 
 # Delete PR queue
 az servicebus queue delete \
