@@ -5,9 +5,8 @@ SCRIPT_DIR=$(dirname "${0}")
 
 cd "${SCRIPT_DIR}"
 
-helm() {
-    # if release exist delete it
-    helm list "${KUBE_NAMESPACE}" | grep "${1}" && helm uninstall "${1}"
+delete_release() {
+  ./k8s.sh delete $1
 }
 
 queue() {
@@ -15,7 +14,7 @@ queue() {
 }
 
 for i in ${CLOSED_PRS}; do
-  helm "recipe-receiver-pr-${i}"
+  delete_release "recipe-receiver-pr-${i}"
   queue "recipes-pr${1}"
 done
 

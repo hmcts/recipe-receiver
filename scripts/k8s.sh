@@ -5,7 +5,7 @@ ACTION=$1
 KUBECONFIG="${KUBECONFIG_PATH}"
 KUBE_FILES="${GITHUB_WORKSPACE}"/recipe-receiver/
 CHART_DIR="./charts/recipe-receiver"
-RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
+RELEASE_NAME="${2}"
 ACR_REPO=${REGISTRY_NAME}.azurecr.io/${PRODUCT}/${APP_NAME}
 AKS_LOG_FILE="./aks-auth-logs"
 
