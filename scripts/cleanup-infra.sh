@@ -24,7 +24,7 @@ echo "Lock deleted"
 
 for pr in ${1}; do
   QUEUE="recipes-pr${pr}"
-  echo "Delete PR queue: ${1}"
+  echo "Delete PR queue: ${QUEUE}"
   az servicebus queue delete \
     --namespace-name "${SERVICE_BUS}" \
     --resource-group "${SB_RESOURCE_GROUP}" \

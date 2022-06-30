@@ -2,9 +2,9 @@ name: Cleanup old Resources
 on: pull_request
 env:
   # Common vars
-  QUEUE_NAME: recipes-pr${{ github.event.number }}
+#  QUEUE_NAME: recipes-pr${{ github.event.number }}
   APP_NAME: recipe-receiver
-  GITHUB_EVENT_NUMBER: ${{ github.event.number }}
+#  GITHUB_EVENT_NUMBER: ${{ github.event.number }}
 
 jobs:
   cleanup:
