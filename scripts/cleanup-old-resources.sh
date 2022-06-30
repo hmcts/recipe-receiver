@@ -7,13 +7,6 @@ cd "${SCRIPT_DIR}"
 
 echo $CLOSED_PRS
 
-delete_release() {
-  ./k8s.sh delete $1
-}
-
-queue() {
-     "${1}"
-}
 
 for i in ${CLOSED_PRS}; do
   ./k8s.sh delete "recipe-receiver-pr-${i}"
