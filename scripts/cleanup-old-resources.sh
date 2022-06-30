@@ -5,9 +5,8 @@ SCRIPT_DIR=$(dirname "${0}")
 
 cd "${SCRIPT_DIR}"
 
-for i in ${CLOSED_PRS}; do
-  ./k8s.sh delete "recipe-receiver-pr-${i}"
-done
+echo "Delete Helm releases"
+./k8s.sh delete
 
-echo "./cleanup-infra.sh ${CLOSED_PRS}"
+echo "Delete Queues"
 ./cleanup-infra.sh ${CLOSED_PRS}
