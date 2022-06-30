@@ -12,4 +12,4 @@ for i in ${CLOSED_PRS}; do
   ./k8s.sh delete "recipe-receiver-pr-${i}"
 done
 
-queue ./cleanup-infra.sh "${CLOSED_PRS}"
+./cleanup-infra.sh "${CLOSED_PRS}"
