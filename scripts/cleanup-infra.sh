@@ -25,11 +25,11 @@ echo "Lock deleted"
 for pr in ${1}; do
   QUEUE="recipes-pr${pr}"
   echo "Delete PR queue: ${QUEUE}"
-  az servicebus queue delete \
-    --namespace-name "${SERVICE_BUS}" \
-    --resource-group "${SB_RESOURCE_GROUP}" \
-    --subscription "${SUBSCRIPTION}" \
-    --name "${QUEUE}"
+#  az servicebus queue delete \
+#    --namespace-name "${SERVICE_BUS}" \
+#    --resource-group "${SB_RESOURCE_GROUP}" \
+#    --subscription "${SUBSCRIPTION}" \
+#    --name "${QUEUE}"
 
   # Make sure queue has been deleted
   count=3
