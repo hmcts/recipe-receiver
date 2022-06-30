@@ -5,9 +5,6 @@ SCRIPT_DIR=$(dirname "${0}")
 
 cd "${SCRIPT_DIR}"
 
-echo $CLOSED_PRS
-
-
 for i in ${CLOSED_PRS}; do
   ./k8s.sh delete "recipe-receiver-pr-${i}"
 done

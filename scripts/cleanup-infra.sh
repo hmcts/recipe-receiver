@@ -24,22 +24,34 @@ echo "Lock deleted"
 
 for pr in ${1}; do
   QUEUE="recipes-pr${pr}"
-  echo "Delete PR queue: ${QUEUE}"
-#  az servicebus queue delete \
-#    --namespace-name "${SERVICE_BUS}" \
-#    --resource-group "${SB_RESOURCE_GROUP}" \
-#    --subscription "${SUBSCRIPTION}" \
-#    --name "${QUEUE}"
 
-  # Make sure queue has been deleted
+  # Delete queue
   count=3
-  until [[ $deleted == "true" ]] || [[ $count == 0 ]]; do
+  until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
+
+
+    if [[ ${count} == 3 ]] && [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
+      # Not found, do nothing
+      continue
+    fi
+
+    # Delete if queue exists
+    if [[ ${count} == 3 ]]; then
+      az servicebus queue delete \
+        --namespace-name "${SERVICE_BUS}" \
+        --resource-group "${SB_RESOURCE_GROUP}" \
+        --subscription "${SUBSCRIPTION}" \
+        --name "${QUEUE}"
+    fi
+
     if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
       deleted="true"
       echo "${QUEUE} queue has been deleted"
-    elif [[ $count == 1 ]]; then
+
+    elif [[ ${count} == 1 ]]; then
       echo "Problem deleting queue"
       exit 1
+
     else
       (( count-=1 ))
       sleep 5
