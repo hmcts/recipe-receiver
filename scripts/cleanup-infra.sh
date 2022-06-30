@@ -25,17 +25,16 @@ echo "Lock deleted"
 for pr in "${@}"; do
   QUEUE="recipes-pr${pr}"
 
-  echo "Working on ${QUEUE}"
-
   # Delete queue
   count=3
   until [[ ${deleted} == "true" ]] || [[ ${count} == 0 ]]; do
 
-    if [[ ${count} == 3 ]] && [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
+    if [[ ${count} == 3 ]] && [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}" 2> /dev/null) ]]; then
       # Not found, do nothing
       break
     fi
 
+   echo "Working on deleting ${QUEUE}"
     # Delete if queue exists
     if [[ ${count} == 3 ]]; then
       az servicebus queue delete \
@@ -45,7 +44,7 @@ for pr in "${@}"; do
         --name "${QUEUE}"
     fi
 
-    if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}") ]]; then
+    if [[ ! $(az servicebus queue show --subscription "${SUBSCRIPTION}" --namespace-name "${SERVICE_BUS}" --resource-group "${SB_RESOURCE_GROUP}" --name "${QUEUE}" 2> /dev/null) ]]; then
       deleted="true"
       echo "${QUEUE} queue has been deleted"
 
