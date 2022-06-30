@@ -52,11 +52,10 @@ for i in ${QUEUES}; do
 
       elif [[ ${count} == 1 ]]; then
         echo "Problem deleting queue: ${QUEUE}"
-#        exit 1
-      else
-        (( count-=1 ))
-        sleep 5
+        break
       fi
+      (( count-=1 ))
+      sleep 5
 
     done
   fi
