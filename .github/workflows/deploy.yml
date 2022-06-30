@@ -128,7 +128,7 @@ jobs:
       # Deploy to AKS
       - name: Deploy to AKS
         run: |
-          ./scripts/k8s.sh deploy ${ env.APP_NAME }-pr-${ env.GITHUB_EVENT_NUMBER }
+          ./scripts/k8s.sh deploy ${{ env.APP_NAME }}-pr-${{ env.GITHUB_EVENT_NUMBER }}
         shell: bash
 
       # Wait for message count to reach 0
