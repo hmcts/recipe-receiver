@@ -25,8 +25,8 @@ fi
 echo "Lock deleted"
 
 
-for pr in ${QUEUES}; do
-  QUEUE="recipes-pr${pr}"
+for i in ${QUEUES}; do
+  QUEUE="recipes-pr${i}"
 
   # Delete queue
   count=3
