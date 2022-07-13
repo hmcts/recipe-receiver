@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+
+
 var (
 	requiredVars = []string{
 		"FULLY_QUALIFIED_NAMESPACE",
