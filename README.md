@@ -53,16 +53,52 @@ SDS and CFT environment variables are loaded from sds.env and cft.env respective
 
 ## Loading a queue with messages
 
-The script to load messages into a queue is located in the messageGenerator directory. You can either run the binary if you're on macOS or use `go run main.go`. For the script to work you'll need to have the `Azure Service Bus Data Sender` role assigned to your Azure account.
+The script to load messages into a queue is located in the messageGenerator directory, you'll need go installed to run it. If you haven't got go installed already you can follow the [installation instructions](https://go.dev/doc/install).
 
-The script takes 3 arguments, the hostname of the service bus, the name of the queue and the number of messages to load the queue with.
+The script takes 4 arguments:
+- hostname of the service bus (required)
+- the name of the queue (required)
+- the number of messages to load the queue with (default: 2000)
+- whether to watch the message count on the queue (default: false)
 
 ### Examples
-Using the binary to load 500 messages into the recipes-pr10 queue (only works if the queue exists, meaning the PR has to still be open):
 
-`./messageGenerator/recipe-sender -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes-pr10 -messages 500`
+#### Working with a PR queue
+To load messages into a PR queue you can run a command very similar to below. For this to work the queue needs to exist, meaning the PR has to still be open. 
 
-Using `go run` to run the script to load 2000 messages into the recipes queue:
+<details>
+  <summary>SDS Example</summary>
 
-`go run messageGenerator/main.go -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes -messages 2000`
+Load 500 messages into a queue called recipes-pr10 and watch the queue:
 
+`./messageGenerator/recipe-sender -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes-pr10 -messages 500 -watch`
+
+</details>
+
+<details>
+  <summary>CFT Example</summary>
+Load 1000 messages into a queue called recipes-pr25 and watch the queue:
+
+`./messageGenerator/recipe-sender -service-bus plum-servicebus-aat.servicebus.windows.net -queue recipes-pr25 -messages 1000 -watch`
+
+</details>
+
+#### Working with the static recipes queues
+Each of the namespaces created have a permanent recipes queue which doesn't depend on a PR being open. You can send messages to this queue to test if keda and the demo app are working as expected.
+
+<details>
+  <summary>SDS Example</summary>
+
+Load 2000 messages into the ithc recipes queue and watch the message count on the queue:
+
+`go run messageGenerator/main.go -service-bus toffee-servicebus-ithc.servicebus.windows.net -queue recipes -messages 2000 -watch` 
+
+</details>
+
+<details>
+  <summary>CFT Example</summary>
+Load 2000 messages into the demo recipes queue and watch the queue:
+
+`go run messageGenerator/main.go -service-bus plum-servicebus-demo.servicebus.windows.net -queue recipes -messages 2000 -watch`
+
+</details>
