@@ -56,10 +56,10 @@ SDS and CFT environment variables are loaded from sds.env and cft.env respective
 The script to load messages into a queue is located in the messageGenerator directory, you'll need go installed to run it. If go isn't already installed on your machine you can follow the [installation instructions](https://go.dev/doc/install) to get the latest version.
 
 The message generator script takes 4 arguments:
-- hostname of the service bus (required)
-- the name of the queue (required)
-- the number of messages to load the queue with (default: 2000)
-- whether to watch the message count on the queue (default: false)
+- service-bus: hostname of the service bus (required)
+- queue: the name of the queue (required)
+- messages: the number of messages to load the queue with (default: 2000)
+- watch: whether to watch the message count on the queue (default: false)
 
 ### Examples
 
