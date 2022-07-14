@@ -109,7 +109,7 @@ func main() {
 	contentType := "plain/text"
 
 	var wg = &sync.WaitGroup{}
-
+	fmt.Println("Sending Recipes")
 	for i := 0; i < *numberOfMessages; i++ {
 		wg.Add(1)
 
@@ -123,7 +123,10 @@ func main() {
 			recipeMessage.Body = []byte(messageString)
 			recipeMessage.ContentType = &contentType
 
-			if err := serviceBusSender.SendMessage(context.TODO(), &recipeMessage, nil); err != nil {
+			ctxWithTimeout, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*10))
+			defer cancel()
+
+			if err := serviceBusSender.SendMessage(ctxWithTimeout, &recipeMessage, nil); err != nil {
 				panic(err)
 			} else {
 				log.Info().Msgf("%s has been sent! Ingredients: %s.", recipeName, recipeIngredients)
@@ -133,8 +136,7 @@ func main() {
 	}
 	wg.Wait()
 
-	watchQueue := *watch
-	if watchQueue {
+	if *watch {
 		adminClient, err := sbAdminAuth(*fullyQualifiedNamespace)
 		if err != nil {
 			panic(err)
