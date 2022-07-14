@@ -119,11 +119,6 @@ jobs:
         with:
           creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","resourceManagerEndpointUrl":"https://management.azure.com","tenantId":"${{ secrets.TENANT_ID }}"}'
 
-      - name: Test Az creds
-        run: |
-          az servicebus queue show --namespace-name toffee-servicebus-stg  --resource-group toffee-shared-infrastructure-stg -n recipes  --subscription DTS-SHAREDSERVICES-STG --query name -o tsv
-        shell: bash
-
       # Create queue and fill it with messages
       - name: Create queue
         run: |
