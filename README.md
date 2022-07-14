@@ -88,6 +88,17 @@ CFT - list the pods for PR 34:
 
 `kubectl get pods -l app.kubernetes.io/name=recipe-receiver-pr-34-function -n cnp`
 
+## Loading a queue with messages
+
+The script to load messages into a queue is located in the messageGenerator directory, you'll need go installed to run it. If go isn't already installed on your machine you can follow the [installation instructions](https://go.dev/doc/install) to get the latest version.
+
+The message generator script takes 4 arguments:
+- service-bus: hostname of the service bus (required)
+- queue: the name of the queue (required)
+- messages: the number of messages to load the queue with (default: 2000)
+- watch: whether to watch the message count on the queue (default: false)
+
+### Examples
 
 #### Working with a PR queue
 To load messages into a PR queue you can run a command very similar to below. For this to work the queue needs to exist, meaning the PR has to still be open.
