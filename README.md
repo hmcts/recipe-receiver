@@ -51,6 +51,44 @@ To reduce the amount of code and the complexity around making sure that both the
 #### Environment variables
 SDS and CFT environment variables are loaded from sds.env and cft.env respectively. These files contain the project specific environment variables that are needed for the workflows to run properly and should be the place for any further project specific variables that may be needed in the future. Common environment variables that can be used across both projects can be declared in the workflow files.
 
+
+## Viewing the AKS resources
+When opening a PR `scaledjob` and `triggerauthentication` custom resources get deployed to the `SDS Dev` and the `CFT Preview` AKS clusters. 
+These resources tell the cluster how to authenticate with the Azure Service Bus and when to scale the recipe-receiver pods so that they can clear the queue quicker.
+
+Resources for the recipe-receiver app that are deployed to the SDS cluster will be deployed into `toffee` namespace whereas resources deployed to the CFT clusters will go to the `cnp` namespace.
+
+### Viewing the created resources 
+
+Before starting, you will need to set your kubectl context to the correct AKS cluster.
+
+#### Get scalejob and triggerauthentication
+The `-l` flags is being used to get the exact resources for chosen PR, you should up the PR number or if you prefer you can omit the `-l` flag and its argument to get all the Keda resources in that namespace. 
+
+SDS - keda resources for PR 51: 
+
+`kubectl get scaledjob,triggerauthentication -l app.kubernetes.io/name=recipe-receiver-pr-51-function -n toffee`
+
+CFT - get keda resources for PR 34:
+
+`kubectl get scaledjob,triggerauthentication -l app.kubernetes.io/name=recipe-receiver-pr-34-function -n cnp`
+
+
+#### How to find the Pods for your PR
+
+The name of the pods created for your PR will look similar to the name below, just with your PR number and a different set of strings after the word `function`:
+
+`recipe-receiver-pr-51-function-brb5b--1-2mdxsz`
+
+SDS - list the pods for PR 51:
+
+`kubectl get pods -l app.kubernetes.io/name=recipe-receiver-pr-51-function -n toffee`
+
+CFT - list the pods for PR 34:
+
+`kubectl get pods -l app.kubernetes.io/name=recipe-receiver-pr-34-function -n cnp`
+
+
 ## Loading a queue with messages
 
 The script to load messages into a queue is located in the messageGenerator directory. You can either run the binary if you're on macOS or use `go run main.go`. For the script to work you'll need to have the `Azure Service Bus Data Sender` role assigned to your Azure account.
