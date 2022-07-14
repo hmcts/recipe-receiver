@@ -123,6 +123,8 @@ func main() {
 			recipeMessage.Body = []byte(messageString)
 			recipeMessage.ContentType = &contentType
 
+			fmt.Println(recipeMessage)
+
 			ctxWithTimeout, cancel := context.WithTimeout(context.Background(), time.Second*30)
 			defer cancel()
 
