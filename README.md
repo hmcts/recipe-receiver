@@ -53,8 +53,8 @@ SDS and CFT environment variables are loaded from sds.env and cft.env respective
 
 
 ## Viewing the AKS resources
-When opening a PR `scaledjob` and `triggerauthentication` custom resources get deployed to the `SDS Dev` and the `CFT Preview` AKS clusters. 
-These resources tell the cluster how to authenticate with the Azure Service Bus and when to scale the recipe-receiver pods so that they can clear the queue quicker.
+When opening a PR `scaledJob` and `triggerAuthentication` custom resources are deployed to the `SDS Dev` and the `CFT Preview` AKS clusters. 
+These resources tell the cluster how to authenticate with the chosen Azure Service Bus and when to scale the recipe-receiver pods so that they can clear the queue quicker.
 
 Resources for the recipe-receiver app that are deployed to the SDS cluster will be deployed into `toffee` namespace whereas resources deployed to the CFT clusters will go to the `cnp` namespace.
 
@@ -62,10 +62,11 @@ Resources for the recipe-receiver app that are deployed to the SDS cluster will 
 
 Before starting, you will need to set your kubectl context to the correct AKS cluster.
 
-#### Get scalejob and triggerauthentication
+#### Get scaledJob and triggerAuthentication resources
 The `-l` flags is being used to get the exact resources for chosen PR, you should up the PR number or if you prefer you can omit the `-l` flag and its argument to get all the Keda resources in that namespace. 
 
-SDS - keda resources for PR 51: 
+##### Examples
+SDS - get keda resources for PR 51: 
 
 `kubectl get scaledjob,triggerauthentication -l app.kubernetes.io/name=recipe-receiver-pr-51-function -n toffee`
 
@@ -80,6 +81,7 @@ The name of the pods created for your PR will look similar to the name below, ju
 
 `recipe-receiver-pr-51-function-brb5b--1-2mdxsz`
 
+##### Examples
 SDS - list the pods for PR 51:
 
 `kubectl get pods -l app.kubernetes.io/name=recipe-receiver-pr-51-function -n toffee`
