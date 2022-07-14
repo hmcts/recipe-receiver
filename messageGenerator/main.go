@@ -123,12 +123,7 @@ func main() {
 			recipeMessage.Body = []byte(messageString)
 			recipeMessage.ContentType = &contentType
 
-			fmt.Println(recipeMessage)
-
-			ctxWithTimeout, cancel := context.WithTimeout(context.Background(), time.Second*30)
-			defer cancel()
-
-			if err := serviceBusSender.SendMessage(ctxWithTimeout, &recipeMessage, nil); err != nil {
+			if err := serviceBusSender.SendMessage(context.Background(), &recipeMessage, nil); err != nil {
 				panic(err)
 			} else {
 				log.Info().Msgf("%s has been sent! Ingredients: %s.", recipeName, recipeIngredients)
