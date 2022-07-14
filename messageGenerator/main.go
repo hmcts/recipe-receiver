@@ -123,7 +123,7 @@ func main() {
 			recipeMessage.Body = []byte(messageString)
 			recipeMessage.ContentType = &contentType
 
-			ctxWithTimeout, cancel := context.WithTimeout(context.Background(), time.Duration(time.Second*10))
+			ctxWithTimeout, cancel := context.WithTimeout(context.Background(), time.Second*30)
 			defer cancel()
 
 			if err := serviceBusSender.SendMessage(ctxWithTimeout, &recipeMessage, nil); err != nil {
