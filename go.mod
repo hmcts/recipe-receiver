@@ -3,7 +3,7 @@ module service-bus-reciever
 go 1.18
 
 require (
-	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.1.0
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.0.0
 	github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus v1.0.1
 	github.com/rs/zerolog v1.27.0
 )
