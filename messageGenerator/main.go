@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
 	"github.com/rs/zerolog"
@@ -138,9 +139,14 @@ func main() {
 }
 
 func azureAuth(fullyQualifiedNamespace string) (*azservicebus.Client, error) {
-	credential, err := azidentity.NewDefaultAzureCredential(nil)
+	var credential azcore.TokenCredential
+
+	credential, err := azidentity.NewAzureCLICredential(nil)
 	if err != nil {
-		return nil, err
+		credential, err = azidentity.NewManagedIdentityCredential(nil)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	client, err := azservicebus.NewClient(fullyQualifiedNamespace, credential, nil)
