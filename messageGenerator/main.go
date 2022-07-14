@@ -108,8 +108,15 @@ func main() {
 	message := azservicebus.Message{}
 	contentType := "plain/text"
 
-	var wg = &sync.WaitGroup{}
 	fmt.Println("Sending Recipes")
+	wg := sync.WaitGroup{}
+
+	messageBatchOptions := azservicebus.MessageBatchOptions{MaxBytes: 1024}
+	messageBatch, err := serviceBusSender.NewMessageBatch(context.Background(), &messageBatchOptions)
+	if err != nil {
+		panic(err)
+	}
+
 	for i := 0; i < *numberOfMessages; i++ {
 		wg.Add(1)
 
@@ -120,10 +127,11 @@ func main() {
 			messageString := fmt.Sprintf("Name: %s, Ingredients: %s.", recipeName, recipeIngredients)
 
 			recipeMessage := message
-			recipeMessage.Body = []byte(messageString)
+			fmt.Println(messageString)
+			recipeMessage.Body = []byte("hi")
 			recipeMessage.ContentType = &contentType
 
-			if err := serviceBusSender.SendMessage(context.Background(), &recipeMessage, nil); err != nil {
+			if err := messageBatch.AddMessage(&recipeMessage, nil); err != nil {
 				panic(err)
 			} else {
 				log.Info().Msgf("%s has been sent! Ingredients: %s.", recipeName, recipeIngredients)
@@ -132,6 +140,12 @@ func main() {
 		}()
 	}
 	wg.Wait()
+
+	if err := serviceBusSender.SendMessageBatch(context.TODO(), messageBatch, nil); err != nil {
+		panic(err)
+	} else {
+		fmt.Println("Messages sent!")
+	}
 
 	if *watch {
 		adminClient, err := sbAdminAuth(*fullyQualifiedNamespace)
