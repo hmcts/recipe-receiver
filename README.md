@@ -89,18 +89,27 @@ CFT - list the pods for PR 34:
 `kubectl get pods -l app.kubernetes.io/name=recipe-receiver-pr-34-function -n cnp`
 
 
-## Loading a queue with messages
+#### Working with a PR queue
+To load messages into a PR queue you can run a command very similar to below. For this to work the queue needs to exist, meaning the PR has to still be open.
 
-The script to load messages into a queue is located in the messageGenerator directory. You can either run the binary if you're on macOS or use `go run main.go`. For the script to work you'll need to have the `Azure Service Bus Data Sender` role assigned to your Azure account.
 
-The script takes 3 arguments, the hostname of the service bus, the name of the queue and the number of messages to load the queue with.
+SDS - load 500 messages into a queue called recipes-pr10 and watch the queue:
 
-### Examples
-Using the binary to load 500 messages into the recipes-pr10 queue (only works if the queue exists, meaning the PR has to still be open):
+`./messageGenerator/recipe-sender -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes-pr10 -messages 500 -watch`
 
-`./messageGenerator/recipe-sender -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes-pr10 -messages 500`
+CFT - load 1000 messages into a queue called recipes-pr25 and watch the queue:
 
-Using `go run` to run the script to load 2000 messages into the recipes queue:
+`./messageGenerator/recipe-sender -service-bus plum-servicebus-aat.servicebus.windows.net -queue recipes-pr25 -messages 1000 -watch`
 
-`go run messageGenerator/main.go -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes -messages 2000`
+
+#### Working with the static recipes queues
+Each of the namespaces created have a permanent recipes queue which doesn't depend on a PR being open. You can send messages to this queue to test if keda and the demo app are working as expected.
+
+SDS - load 2000 messages into the ithc recipes queue and watch the message count on the queue:
+
+`go run messageGenerator/main.go -service-bus toffee-servicebus-ithc.servicebus.windows.net -queue recipes -messages 2000 -watch`
+
+CFT - load 2000 messages into the demo recipes queue and watch the queue:
+
+`go run messageGenerator/main.go -service-bus plum-servicebus-demo.servicebus.windows.net -queue recipes -messages 2000 -watch`
 
