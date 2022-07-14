@@ -90,6 +90,8 @@ CFT - list the pods for PR 34:
 
 `kubectl get pods -l app.kubernetes.io/name=recipe-receiver-pr-34-function -n cnp`
 
+Again, you can get all the pods by omitting the `-l` flag.
+
 ## Loading a queue with messages
 
 The script to load messages into a queue is located in the messageGenerator directory, you'll need go installed to run it. If go isn't already installed on your machine you can follow the [installation instructions](https://go.dev/doc/install) to get the latest version.
