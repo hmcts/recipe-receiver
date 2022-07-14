@@ -96,6 +96,12 @@ func main() {
 	if err != nil {
 		fmt.Printf("Unable to to authenticate: %s", err)
 	}
+	defer func(client *azservicebus.Client, ctx context.Context) {
+		err := client.Close(ctx)
+		if err != nil {
+			panic(err)
+		}
+	}(client, context.Background())
 
 	serviceBusSender, err := client.NewSender(*queueName, nil)
 	if err != nil {
