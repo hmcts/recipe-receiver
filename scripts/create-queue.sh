@@ -2,7 +2,7 @@
 
 set -ex
 
-MESSAGES=1000
+MESSAGES=100
 SCRIPT_DIR=$(dirname "${0}")
 
 # Create queue for pr
