@@ -1,4 +1,4 @@
-# sds-recipe-receiver
+# recipe-receiver
 Demo app that reads messages from an Azure Service Bus queue and logs the messages it receives.
 
 ## Prerequisites 
