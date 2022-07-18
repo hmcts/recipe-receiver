@@ -63,7 +63,7 @@ Resources for the recipe-receiver app that are deployed to the SDS cluster will 
 Before starting, you will need to set your kubectl context to the correct AKS cluster.
 
 #### Get scaledJob and triggerAuthentication resources
-The `-l` flags is being used to get the exact resources for chosen PR, you should up the PR number or if you prefer you can omit the `-l` flag and its argument to get all the Keda resources in that namespace. 
+The `-l` flags is being used to get the exact resources for chosen PR, you should update the PR number or if you prefer you can omit the `-l` flag and its argument to get all the Keda resources in that namespace. 
 
 ##### Examples
 SDS - get keda resources for PR 51: 
