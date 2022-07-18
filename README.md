@@ -13,15 +13,15 @@ The secrets were created following [these instructions](https://github.com/marke
 
 
 ### Permissions 
-For this repository to be fully function we need to have the correct permissions in place for Keda, the GitHub workflows and the recipe receiver application.
+For this repository to be fully functional we need to have the correct permissions in place for Keda, the GitHub workflows and the Recipe Receiver application.
 
 #### Keda 
 The `triggerAuthentications` CRD from Keda uses Azure Pod Identity and a Managed Identity (`keda-{env}-mi`) to authenticate with the Azure Service Bus. This allows Keda to watch the size of the Queue, so it can scale pods up and down when necessary.
 
 The Managed Identity used by Keda needs the `Azure Service Bus Data Receiver` role scoped to the `toffee-servicebus-stg` service bus.
 
-#### Application
-The recipe receiver application also uses a Managed identity to authenticate with the Service Bus app needs the `Azure Service Bus Data Receiver` role scoped to the `toffee-servicebus-stg` service bus.
+#### Recipe Receiver
+The Recipe Receiver application also uses a Managed identity to authenticate with the Service Bus. The MI needs the `Azure Service Bus Data Receiver` role scoped to the `toffee-servicebus-stg` service bus.
 
 #### Workflow
 The workflow authenticates to Azure using Service Principal credentials stored in the `AZURE_CREDENTIALS` repository secret. That SP was created manually and is called `sds-recipe-receiver`.
