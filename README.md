@@ -3,15 +3,20 @@ Demo app that reads messages from an Azure Service Bus queue and logs the messag
 
 ## Prerequisites 
 
-### Repository secrets
-There 3 secrets that are needed for workflows so they can function properly they are:
-* AZURE_CREDENTIALS - the output from following [these instructions](https://github.com/marketplace/actions/azure-login#configure-deployment-credentials).
+### GitHub repository secrets
+The secrets were created following [these instructions](https://github.com/marketplace/actions/azure-login#configure-deployment-credentials). The output from the the command has been split out into 4 secrets instead of one big secret. 
+
+* CLIENT_ID
+* CLIENT_SECRET
+* TENANT_ID
+* SUBSCRIPTION_ID
+
 
 ### Permissions 
 For this repository to be fully function we need to have the correct permissions in place for Keda, the GitHub workflows and the recipe receiver application.
 
 #### Keda 
-The triggerAuthentications CRD from Keda uses Azure Pod Identity and a Managed Identity (keda-{env}-mi) to authenticate with the Azure Service Bus. This allows Keda to watch the size of the Queue, so it can scale pods up and down when necessary.
+The `triggerAuthentications` CRD from Keda uses Azure Pod Identity and a Managed Identity (`keda-{env}-mi`) to authenticate with the Azure Service Bus. This allows Keda to watch the size of the Queue, so it can scale pods up and down when necessary.
 
 The Managed Identity used by Keda needs the `Azure Service Bus Data Receiver` role scoped to the `toffee-servicebus-stg` service bus.
 
@@ -19,7 +24,7 @@ The Managed Identity used by Keda needs the `Azure Service Bus Data Receiver` ro
 The recipe receiver application also uses a Managed identity to authenticate with the Service Bus app needs the `Azure Service Bus Data Receiver` role scoped to the `toffee-servicebus-stg` service bus.
 
 #### Workflow
-The workflow authenticates to Azure using Service Principal credentials stored in the AZURE_CREDENTIALS repository secret. That SP was created manually and is called `sds-recipe-receiver`.
+The workflow authenticates to Azure using Service Principal credentials stored in the `AZURE_CREDENTIALS` repository secret. That SP was created manually and is called `sds-recipe-receiver`.
 
 To allow the workflow to do all of this we need:
 * `Owner` role on the `toffee-shared-infrastructure-stg` resource group
