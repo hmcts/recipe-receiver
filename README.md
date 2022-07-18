@@ -99,7 +99,7 @@ Again, you can get all the pods by omitting the `-l` flag.
 
 ## Loading a queue with messages
 
-The script to load messages into a queue is located in the messageGenerator directory, you'll need `go` installed to run it. If go isn't already installed on your machine you can follow the [installation instructions](https://go.dev/doc/install) to get the latest version.
+The script to load messages into a queue is located in the `messageGenerator` directory, you'll need `go` installed to run it. If go isn't already installed on your machine you can follow the [installation instructions](https://go.dev/doc/install) to get the latest version.
 
 The message generator script takes 4 arguments:
 - service-bus: hostname of the service bus (required)
