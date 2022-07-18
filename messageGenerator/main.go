@@ -4,8 +4,10 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/Azure/azure-sdk-for-go/sdk/azcore"
 	"github.com/Azure/azure-sdk-for-go/sdk/azidentity"
 	"github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus"
+	sbadmin "github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus/admin"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"math/rand"
@@ -73,11 +75,13 @@ func main() {
 		fullyQualifiedNamespace *string
 		queueName               *string
 		numberOfMessages        *int
+		watch                   *bool
 	)
 
 	fullyQualifiedNamespace = flag.String("service-bus", "", "Host name of the service bus to send messages to")
 	queueName = flag.String("queue", "", "Name of the queue to send messages to")
 	numberOfMessages = flag.Int("messages", 2000, "Number of messages to send to the queue")
+	watch = flag.Bool("watch", false, "Watch the message count on the queue you're sending messages to")
 
 	flag.Parse()
 
@@ -96,6 +100,12 @@ func main() {
 	if err != nil {
 		fmt.Printf("Unable to to authenticate: %s", err)
 	}
+	defer func(client *azservicebus.Client, ctx context.Context) {
+		err := client.Close(ctx)
+		if err != nil {
+			panic(err)
+		}
+	}(client, context.Background())
 
 	serviceBusSender, err := client.NewSender(*queueName, nil)
 	if err != nil {
@@ -129,15 +139,56 @@ func main() {
 		}()
 	}
 	wg.Wait()
+
+	if *watch {
+		adminClient, err := sbAdminAuth(*fullyQualifiedNamespace)
+		if err != nil {
+			panic(err)
+		}
+
+		for queueLength := *numberOfMessages; queueLength > 0; time.Sleep(5 * time.Second) {
+			queueResponse, err := adminClient.GetQueueRuntimeProperties(context.TODO(), *queueName, nil)
+			if err != nil {
+				panic(err)
+			}
+			queueLength = int(queueResponse.TotalMessageCount)
+			fmt.Printf("Length of %s/%s queue is: %d\n", *fullyQualifiedNamespace, *queueName, queueLength)
+		}
+	}
 }
 
 func azureAuth(fullyQualifiedNamespace string) (*azservicebus.Client, error) {
-	credential, err := azidentity.NewDefaultAzureCredential(nil)
+	var credential azcore.TokenCredential
+
+	credential, err := azidentity.NewAzureCLICredential(nil)
+	if err != nil {
+		credential, err = azidentity.NewManagedIdentityCredential(nil)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	client, err := azservicebus.NewClient(fullyQualifiedNamespace, credential, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	client, err := azservicebus.NewClient(fullyQualifiedNamespace, credential, nil)
+	return client, nil
+
+}
+
+func sbAdminAuth(fullyQualifiedNamespace string) (*sbadmin.Client, error) {
+	var credential azcore.TokenCredential
+
+	credential, err := azidentity.NewAzureCLICredential(nil)
+	if err != nil {
+		credential, err = azidentity.NewManagedIdentityCredential(nil)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	client, err := sbadmin.NewClient(fullyQualifiedNamespace, credential, nil)
 	if err != nil {
 		return nil, err
 	}
