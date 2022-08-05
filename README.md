@@ -125,11 +125,11 @@ To load messages into a PR queue you can run a command very similar to below. Fo
 
 SDS - load 500 messages into a queue called recipes-pr10 and watch the queue:
 
-`./messageGenerator/recipe-sender -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes-pr10 -messages 500 -watch`
+`go run messageGenerator/main.go -service-bus toffee-servicebus-stg.servicebus.windows.net -queue recipes-pr10 -messages 500 -watch`
 
 CFT - load 1000 messages into a queue called recipes-pr25 and watch the queue:
 
-`./messageGenerator/recipe-sender -service-bus plum-servicebus-aat.servicebus.windows.net -queue recipes-pr25 -messages 1000 -watch`
+`go run messageGenerator/main.go -service-bus plum-servicebus-aat.servicebus.windows.net -queue recipes-pr25 -messages 1000 -watch`
 
 
 #### Working with the static recipes queues
