@@ -1,6 +1,6 @@
 dependencies:
 - name: function
   repository: https://hmctspublic.azurecr.io/helm/v1/repo
-  version: 2.0.2-beta
-digest: sha256:f6da80770e038b373b3c2f4e2600a71e1f11c150b4a608ffe38a75b688bffa48
-generated: "2022-06-23T15:29:55.722226+01:00"
+  version: 2.3.4
+digest: sha256:f3ccc599394ceab7ef0cf74614e580dcd0aff34a4e3f258b020103f3c091bc2d
+generated: "2023-03-30T10:13:36.023546146Z"
