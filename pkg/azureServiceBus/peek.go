@@ -23,4 +23,5 @@ func peekWithRetry(receiver *azservicebus.Receiver) (err error) {
 		fmt.Println("Failed to connect to queue, retrying...")
 	}
 	return nil
+
 }
