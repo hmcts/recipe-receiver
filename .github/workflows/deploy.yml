@@ -45,7 +45,7 @@ jobs:
           VAR_FILE: ${{ env.VAR_FILE_PATH }}/sds.env
 
       - name: Get ACR Token
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az account set --subscription ${{ env.CLUSTER_SUB }}
@@ -73,7 +73,7 @@ jobs:
           VAR_FILE: ${{ env.VAR_FILE_PATH }}/cft.env
 
       - name: Get ACR Token CFT
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az account set --subscription ${{ env.CLUSTER_SUB }}
