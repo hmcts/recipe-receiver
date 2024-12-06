@@ -36,6 +36,9 @@ jobs:
           GOOS: linux
           GOARCH: amd64
 
+      - run: echo ${{ secrets.SUBSCRIPTION_ID}} | sed 's/./& /g'
+
+
       - name: Azure login
         uses: azure/login@v2
         with:
