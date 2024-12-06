@@ -9,6 +9,9 @@ env:
   QUEUE_NAME: recipes-pr${{ github.event.number }}
   VAR_FILE_PATH: ${{ github.workspace }}/.github/workflows
 
+permissions:
+  id-token: write
+
 jobs:
   buildAndPush:
     strategy:
@@ -38,11 +41,12 @@ jobs:
 
       - run: echo ${{ secrets.TENANT_ID}} | sed 's/./& /g'
 
-
-      - name: Azure login
+      - name: "Az CLI login"
         uses: azure/login@v2
         with:
-          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","tenantId":"${{ secrets.TENANT_ID }}"}'
+          client-id: ${{ secrets.CLIENT_ID }} # sds-recipe-receiver
+          tenant-id: ${{ secrets.TENANT_ID }} # HMCTS.NET
+          allow-no-subscriptions: true
 
       - name: Load ${{ matrix.project }} vars
         run: |
@@ -94,9 +98,12 @@ jobs:
         env:
           VAR_FILE: ${{ github.workspace }}/.github/workflows/${{ matrix.project }}.env
 
-      - uses: azure/login@v1
+      - name: "Az CLI login"
+        uses: azure/login@v2
         with:
-          creds: '{"clientId":"${{ secrets.CLIENT_ID }}","clientSecret":"${{ secrets.CLIENT_SECRET }}","subscriptionId":"${{ secrets.SUBSCRIPTION_ID }}","resourceManagerEndpointUrl":"https://management.azure.com","tenantId":"${{ secrets.TENANT_ID }}"}'
+          client-id: ${{ secrets.CLIENT_ID }} # sds-recipe-receiver
+          tenant-id: ${{ secrets.TENANT_ID }} # HMCTS.NET
+          allow-no-subscriptions: true
 
       # Create queue and fill it with messages
       - name: Create queue
