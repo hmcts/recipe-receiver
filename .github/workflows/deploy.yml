@@ -39,14 +39,12 @@ jobs:
           GOOS: linux
           GOARCH: amd64
 
-      - run: echo ${{ secrets.TENANT_ID}} | sed 's/./& /g'
-
       - name: "Az CLI login"
         uses: azure/login@v2
         with:
           client-id: ${{ secrets.CLIENT_ID }} # sds-recipe-receiver
           tenant-id: ${{ secrets.TENANT_ID }} # HMCTS.NET
-          allow-no-subscriptions: true
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       - name: Load ${{ matrix.project }} vars
         run: |
@@ -103,7 +101,7 @@ jobs:
         with:
           client-id: ${{ secrets.CLIENT_ID }} # sds-recipe-receiver
           tenant-id: ${{ secrets.TENANT_ID }} # HMCTS.NET
-          allow-no-subscriptions: true
+          subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       # Create queue and fill it with messages
       - name: Create queue
