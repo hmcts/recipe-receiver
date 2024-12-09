@@ -64,9 +64,8 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az account set --subscription ${{ env.CLUSTER_SUB }}
-            token=$(az acr login -n ${{ env.REGISTRY_NAME }} --expose-token | jq -r .accessToken)
-            echo "ACR_TOKEN=${token}" >> $GITHUB_ENV
+            token=$(az acr login -n ${{ env.REGISTRY_NAME }} --subscription ${{ env.REGISTRY_SUB }}  --expose-token | jq -r .accessToken)
+            echo "ACR_TOKEN=$token" >> $GITHUB_ENV
 
       # Connect to Azure Container Registry (ACR)
       - uses: azure/docker-login@v2
