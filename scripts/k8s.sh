@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set +x
+
 ACTION=$1
 
 KUBECONFIG="${KUBECONFIG_PATH}"
@@ -12,9 +14,9 @@ AKS_LOG_FILE="./aks-auth-logs"
 ## Set context
 get_creds() {
   az aks get-credentials --subscription "${CLUSTER_SUB}" \
-                         --resource-group "${AKS_PROJECT}-${AKS_ENV}-${1}-rg" \
-                         --name "${AKS_PROJECT}-${AKS_ENV}-${1}-aks" \
-                         --admin
+                        --resource-group "${AKS_PROJECT}-${AKS_ENV}-${1}-rg" \
+                        --name "${AKS_PROJECT}-${AKS_ENV}-${1}-aks" \
+                        --admin
 }
 
 # Try getting Cluster 00 creds first then 01. Fail if problems with both
