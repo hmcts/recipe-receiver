@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -x
+set -ex
 
 ACTION=$1
 
@@ -14,20 +14,22 @@ AKS_LOG_FILE="./aks-auth-logs"
 ## Set context
 get_creds() {
   az aks get-credentials --subscription "${CLUSTER_SUB}" \
-                        --resource-group "${AKS_PROJECT}-${AKS_ENV}-${1}-rg" \
-                        --name "${AKS_PROJECT}-${AKS_ENV}-${1}-aks" \
-                        --admin
+                         --resource-group "${AKS_PROJECT}-${AKS_ENV}-${1}-rg" \
+                         --name "${AKS_PROJECT}-${AKS_ENV}-${1}-aks" \
+                         --admin
 }
 
 # Try getting Cluster 00 creds first then 01. Fail if problems with both
 get_creds 00 2> "${AKS_LOG_FILE}" || get_creds 01 2> "${AKS_LOG_FILE}" || ( echo "Failed to authenticate after trying both clusters. Errors below." && cat "${AKS_LOG_FILE}"&& exit 1)
 
-set -e
+cat $AKS_LOG_FILE
 
 if [[ ${ACTION} == "deploy" ]]; then
   RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
   helm repo add function https://hmctspublic.azurecr.io/helm/v1/repo
   helm dependency build "${CHART_DIR}"
+
+  helm list -n "${KUBE_NAMESPACE}" --short --filter "${RELEASE_NAME}"
 
   helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" "${CHART_DIR}" -n "${KUBE_NAMESPACE}" \
       --set function.image="${ACR_REPO}":pr-"${GITHUB_EVENT_NUMBER}" \
@@ -37,7 +39,7 @@ if [[ ${ACTION} == "deploy" ]]; then
       --set function.triggers[0].namespace="${SERVICE_BUS}" \
       --set function.triggers[0].queueName="${QUEUE_NAME}" \
       --set function.triggers[0].queueLength=5 \
-      --wait
+      --wait -debug
 
 elif [[ ${ACTION} == "delete" ]]; then
   for release in ${RELEASES}; do
