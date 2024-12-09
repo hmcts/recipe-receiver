@@ -42,9 +42,16 @@ jobs:
       - name: "Az CLI login"
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.CLIENT_ID }} # sds-recipe-receiver
+          client-id: ${{ secrets.CLIENT_ID }} # DTS Recipe Receiver testing
           tenant-id: ${{ secrets.TENANT_ID }} # HMCTS.NET
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
+
+      - name: Azure CLI script
+        uses: azure/cli@v2
+        with:
+          azcliversion: latest
+          inlineScript: |
+            az account show
 
       - name: Load ${{ matrix.project }} vars
         run: |
@@ -99,7 +106,7 @@ jobs:
       - name: "Az CLI login"
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.CLIENT_ID }} # sds-recipe-receiver
+          client-id: ${{ secrets.CLIENT_ID }} # DTS Recipe Receiver testing
           tenant-id: ${{ secrets.TENANT_ID }} # HMCTS.NET
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
