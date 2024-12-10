@@ -61,7 +61,7 @@ jobs:
           VAR_FILE: ${{ env.VAR_FILE_PATH }}/${{ matrix.project }}.env
 
       - name: Get ACR Token for ${{ matrix.project }}
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             token=$(az acr login -n ${{ env.REGISTRY_NAME }} --subscription ${{ env.REGISTRY_SUB }}  --expose-token | jq -r .accessToken)
