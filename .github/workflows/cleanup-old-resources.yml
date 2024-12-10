@@ -7,6 +7,9 @@ env:
   # Common vars
   APP_NAME: recipe-receiver
 
+permissions:
+  id-token: write
+
 jobs:
   cleanup:
     strategy:
