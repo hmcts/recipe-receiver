@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CLOSED_PRS=$(curl -sS -H "Accept: application/vnd.github.v3+json" 'https://api.github.com/repos/hmcts/sds-recipe-receiver/pulls?state=closed' | jq '.[].number')
+CLOSED_PRS=$(curl -sS -H "Accept: application/vnd.github.v3+json" 'https://api.github.com/repos/hmcts/recipe-receiver/pulls?state=closed' | jq '.[].number')
 SCRIPT_DIR=$(dirname "${0}")
 
 cd "${SCRIPT_DIR}"
