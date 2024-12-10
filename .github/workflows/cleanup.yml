@@ -10,6 +10,9 @@ env:
   APP_NAME: recipe-receiver
   GITHUB_EVENT_NUMBER: ${{ github.event.number }}
 
+permissions:
+  id-token: write
+
 jobs:
   cleanup:
     strategy:
