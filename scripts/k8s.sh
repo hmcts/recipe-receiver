@@ -24,7 +24,7 @@ get_creds 00 2> "${AKS_LOG_FILE}" || get_creds 01 2> "${AKS_LOG_FILE}" || ( echo
 
 if [[ ${ACTION} == "deploy" ]]; then
   RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
-  helm repo add function https://hmctspublic.azurecr.io/helm/v1/repo
+  helm repo add function https://hmctsprod.azurecr.io/helm/v1/repo
   helm dependency build "${CHART_DIR}"
 
   helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" "${CHART_DIR}" -n "${KUBE_NAMESPACE}" \
