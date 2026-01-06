@@ -30,7 +30,7 @@ if [[ ${ACTION} == "deploy" ]]; then
 
   
   # helm repo add function https://hmctsprod.azurecr.io/helm/v1/repo
-  helm upgrade --install recipe-receiver-pr-114 oci://hmctsprod.azurecr.io/helm/recipe-receiver --version 1.2.3 --namespace toffee
+  helm upgrade --install recipe-receiver-pr-114 oci://hmctsprod.azurecr.io/plum/recipe-receiver --version 1.2.3 --namespace toffee
 
   helm dependency build "${CHART_DIR}"
 
