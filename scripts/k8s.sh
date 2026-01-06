@@ -26,7 +26,7 @@ if [[ ${ACTION} == "deploy" ]]; then
   RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
 
   az acr login --name hmctsprod
-  helm registry login hmctsprod.azurecr.io
+  # helm registry login hmctsprod.azurecr.io
 
   
   # helm repo add function https://hmctsprod.azurecr.io/helm/v1/repo
