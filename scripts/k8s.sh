@@ -25,16 +25,17 @@ get_creds 00 2> "${AKS_LOG_FILE}" || get_creds 01 2> "${AKS_LOG_FILE}" || ( echo
 if [[ ${ACTION} == "deploy" ]]; then
   RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
 
+  # Login to the new ACR
   az acr login --name hmctsprod
-  # helm registry login hmctsprod.azurecr.io
 
-  
-  # helm repo add function https://hmctsprod.azurecr.io/helm/v1/repo
-  helm upgrade --install recipe-receiver-pr-114 oci://hmctsprod.azurecr.io/plum/recipe-receiver --version 1.2.3 --namespace toffee
-
+  # Optional: build chart dependencies if chart has local dependencies
   helm dependency build "${CHART_DIR}"
 
-  helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" "${CHART_DIR}" -n "${KUBE_NAMESPACE}" \
+  # Deploy from OCI registry
+  helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" \
+      oci://hmctsprod.azurecr.io/plum/recipe-receiver \
+      --version 1.2.3 \
+      -n "${KUBE_NAMESPACE}" \
       --set function.image="${ACR_REPO}":pr-"${GITHUB_EVENT_NUMBER}" \
       --set function.environment.QUEUE="${QUEUE_NAME}" \
       --set function.environment.FULLY_QUALIFIED_NAMESPACE="${SERVICE_BUS}.servicebus.windows.net" \
