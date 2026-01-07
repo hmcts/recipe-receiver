@@ -35,10 +35,8 @@ if [[ ${ACTION} == "deploy" ]]; then
   # Optional: build chart dependencies if chart has local dependencies
   helm dependency build "${CHART_DIR}"
 
-  # Deploy from OCI registry
   helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" \
-      oci://hmctsprod.azurecr.io/plum/recipe-receiver \
-      --version pr-"${GITHUB_EVENT_NUMBER}" \
+      "${CHART_DIR}" \
       -n "${KUBE_NAMESPACE}" \
       --set function.image="${ACR_REPO}":pr-"${GITHUB_EVENT_NUMBER}" \
       --set function.environment.QUEUE="${QUEUE_NAME}" \
@@ -48,6 +46,7 @@ if [[ ${ACTION} == "deploy" ]]; then
       --set function.triggers[0].queueName="${QUEUE_NAME}" \
       --set function.triggers[0].queueLength=5 \
       --wait
+
 
 elif [[ ${ACTION} == "delete" ]]; then
   for release in ${RELEASES}; do
