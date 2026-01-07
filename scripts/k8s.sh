@@ -27,7 +27,12 @@ if [[ ${ACTION} == "deploy" ]]; then
 
   # Login to the new ACR
   az acr login --name hmctsprod
-  helm registry login hmctsprod.azurecr.io
+
+  ACR_TOKEN=$(az acr login -n hmctsprod --expose-token --query accessToken -o tsv)
+
+  helm registry login hmctsprod.azurecr.io \
+    --username 00000000-0000-0000-0000-000000000000 \
+    --password "${ACR_TOKEN}"
 
   # Optional: build chart dependencies if chart has local dependencies
   helm dependency build "${CHART_DIR}"
