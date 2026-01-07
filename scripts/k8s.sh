@@ -37,7 +37,7 @@ if [[ ${ACTION} == "deploy" ]]; then
 
   # Deploy from OCI registry
   helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" \
-      oci://hmctsprod.azurecr.io/plum/recipe-receiver \
+      oci://hmctsprod.azurecr.io/helm/recipe-receiver \
       --version 1.2.3 \
       -n "${KUBE_NAMESPACE}" \
       --set function.image="${ACR_REPO}":pr-"${GITHUB_EVENT_NUMBER}" \
