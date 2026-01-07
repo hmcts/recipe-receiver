@@ -24,10 +24,19 @@ get_creds 00 2> "${AKS_LOG_FILE}" || get_creds 01 2> "${AKS_LOG_FILE}" || ( echo
 
 if [[ ${ACTION} == "deploy" ]]; then
   RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
-  helm repo add function https://hmctspublic.azurecr.io/helm/v1/repo
+
+  # Login to the new ACR
+  ACR_TOKEN=$(az acr login -n hmctsprod --expose-token --query accessToken -o tsv)
+
+  helm registry login hmctsprod.azurecr.io \
+    --username 00000000-0000-0000-0000-000000000000 \
+    --password "${ACR_TOKEN}"
+
   helm dependency build "${CHART_DIR}"
 
-  helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" "${CHART_DIR}" -n "${KUBE_NAMESPACE}" \
+  helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" \
+      "${CHART_DIR}" \
+      -n "${KUBE_NAMESPACE}" \
       --set function.image="${ACR_REPO}":pr-"${GITHUB_EVENT_NUMBER}" \
       --set function.environment.QUEUE="${QUEUE_NAME}" \
       --set function.environment.FULLY_QUALIFIED_NAMESPACE="${SERVICE_BUS}.servicebus.windows.net" \
@@ -36,6 +45,7 @@ if [[ ${ACTION} == "deploy" ]]; then
       --set function.triggers[0].queueName="${QUEUE_NAME}" \
       --set function.triggers[0].queueLength=5 \
       --wait
+
 
 elif [[ ${ACTION} == "delete" ]]; then
   for release in ${RELEASES}; do
