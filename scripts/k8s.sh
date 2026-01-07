@@ -27,6 +27,7 @@ if [[ ${ACTION} == "deploy" ]]; then
 
   # Login to the new ACR
   az acr login --name hmctsprod
+  helm registry login hmctsprod.azurecr.io
 
   # Optional: build chart dependencies if chart has local dependencies
   helm dependency build "${CHART_DIR}"
