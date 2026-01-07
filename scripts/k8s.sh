@@ -26,8 +26,6 @@ if [[ ${ACTION} == "deploy" ]]; then
   RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
 
   # Login to the new ACR
-  az acr login --name hmctsprod
-
   ACR_TOKEN=$(az acr login -n hmctsprod --expose-token --query accessToken -o tsv)
 
   helm registry login hmctsprod.azurecr.io \

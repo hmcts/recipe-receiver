@@ -7,4 +7,4 @@ appVersion: "0.1.0"
 dependencies:
   - name: function
     version: 2.5.3
-    repository: 'oci://hmctsprod.azurecr.io/helm/v1/repo'
+    repository: 'oci://hmctsprod.azurecr.io/helm'
