@@ -23,18 +23,13 @@ get_creds() {
 get_creds 00 2> "${AKS_LOG_FILE}" || get_creds 01 2> "${AKS_LOG_FILE}" || ( echo "Failed to authenticate after trying both clusters. Errors below." && cat "${AKS_LOG_FILE}"&& exit 1)
 
 if [[ ${ACTION} == "deploy" ]]; then
+  # Helm release name
   RELEASE_NAME="${APP_NAME}-pr-${GITHUB_EVENT_NUMBER}"
 
-  # Login to the new ACR
-  ACR_TOKEN=$(az acr login -n hmctsprod --expose-token --query accessToken -o tsv)
-
-  helm registry login hmctsprod.azurecr.io \
-    --username 00000000-0000-0000-0000-000000000000 \
-    --password "${ACR_TOKEN}"
-
-  # Optional: build chart dependencies if chart has local dependencies
+  # Build chart dependencies (only if needed)
   helm dependency build "${CHART_DIR}"
 
+  # Deploy using local chart, override image and environment variables
   helm upgrade -f "${CHART_DIR}/values-${PROJECT}.yaml" --install "${RELEASE_NAME}" \
       "${CHART_DIR}" \
       -n "${KUBE_NAMESPACE}" \
@@ -46,6 +41,7 @@ if [[ ${ACTION} == "deploy" ]]; then
       --set function.triggers[0].queueName="${QUEUE_NAME}" \
       --set function.triggers[0].queueLength=5 \
       --wait
+fi
 
 
 elif [[ ${ACTION} == "delete" ]]; then
