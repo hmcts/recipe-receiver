@@ -24,7 +24,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.18
+          go-version: 1.25
 
       - name: Go fmt
         run: go fmt
@@ -92,7 +92,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v6
         with:
-          go-version: 1.18
+          go-version: 1.25
 
       # Load Project environment variables
       - name: Load ${{ matrix.project }} vars
