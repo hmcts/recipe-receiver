@@ -27,7 +27,7 @@ jobs:
           VAR_FILE: ${{ github.workspace }}/.github/workflows/${{ matrix.project }}.env
 
       - name: "Az CLI login"
-        uses: azure/login@v2
+        uses: azure/login@v3
         with:
           client-id: ${{ secrets.CLIENT_ID }} # DTS Recipe Receiver testing
           tenant-id: ${{ secrets.TENANT_ID }} # HMCTS.NET
