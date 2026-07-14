@@ -47,7 +47,7 @@ jobs:
           subscription-id: ${{ secrets.SUBSCRIPTION_ID }}
 
       - name: Azure CLI script
-        uses: azure/cli@v2
+        uses: azure/cli@v3
         with:
           azcliversion: latest
           inlineScript: |
@@ -61,7 +61,7 @@ jobs:
           VAR_FILE: ${{ env.VAR_FILE_PATH }}/${{ matrix.project }}.env
 
       - name: Get ACR Token for ${{ matrix.project }}
-        uses: azure/CLI@v2
+        uses: azure/CLI@v3
         with:
           inlineScript: |
             token=$(az acr login -n ${{ env.REGISTRY_NAME }} --subscription ${{ env.REGISTRY_SUB }}  --expose-token | jq -r .accessToken)
